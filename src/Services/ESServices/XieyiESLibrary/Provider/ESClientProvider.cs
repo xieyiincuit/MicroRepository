@@ -41,6 +41,7 @@ namespace XieyiESLibrary.Provider
                 if (!string.IsNullOrWhiteSpace(esConfig.Value.UserName) && !string.IsNullOrWhiteSpace(esConfig.Value.Password))
                 {
                     connectionSetting.BasicAuthentication(esConfig.Value.UserName, esConfig.Value.Password);
+                    logger.LogInformation($"Authentication successfully -> UserName :[{esConfig.Value.UserName}]");
                 }
                 
                 ElasticClient = new ElasticClient(connectionSetting);
@@ -48,7 +49,7 @@ namespace XieyiESLibrary.Provider
             }
             catch (Exception ex)
             {
-                logger.LogError(ex,"ElasticSearchClient Initialized failed.");
+                logger.LogCritical(ex,"ElasticSearchClient Initialized failed.");
                 throw;
             }
 

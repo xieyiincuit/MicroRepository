@@ -1,0 +1,27 @@
+﻿using System;
+using XieyiESLibrary.Entity;
+
+namespace XieyiES.Api.Domain
+{
+    public class UserWallet : ESBaseEntity
+    {
+        public string UserId { get; set; }
+
+        public string UserName { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public decimal Money { get; set; }
+    }
+
+    public class Manager
+    {
+        public string UserId { get; set; }
+
+        public string UserName { get; set; }
+
+        public DateTime CreateTime { get; set; }
+
+        public decimal Money { get; set; }
+    }
+}

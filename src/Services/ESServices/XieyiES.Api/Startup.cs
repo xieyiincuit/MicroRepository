@@ -1,11 +1,13 @@
+using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using XieyiES.Api.Interfaces;
-using XieyiES.Api.Services;
+using XieyiESLibrary;
 
 namespace XieyiES.Api
 {
@@ -26,9 +28,17 @@ namespace XieyiES.Api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ElasticSearch Api", Version = "v1", Description = "Docs for elasticSearch"});
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
-            services.AddSingleton<IESProvider, ESProvider>();
+            services.AddESServiceInDI(options =>
+            {
+                options.Urls = Configuration["ElasticSearch:Uri"];
+                options.UserName = Configuration["ElasticSearch:UserName"];
+                options.Password = Configuration["ElasticSearch:Password"];
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

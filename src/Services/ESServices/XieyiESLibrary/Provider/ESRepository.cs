@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Nest;
@@ -22,30 +24,52 @@ namespace XieyiESLibrary.Provider
 
         public async Task InsertAsync<T>(T entity, string index = "") where T : class
         {
-            var indexName = index.GetIndex<T>();
-            bool exist = await IndexExistsAsync(indexName);
-            if (!exist)
+            try
             {
-                await ((ElasticClient)_elasticClient).CreateIndexAsync<T>(indexName);
+                var indexName = index.GetIndex<T>();
+                var exist = await IndexExistsAsync(indexName);
+                if (!exist)
+                {
+                    await ((ElasticClient)_elasticClient).CreateIndexAsync<T>(indexName);
+                }
+                var response = await _elasticClient.IndexAsync(entity, x => x.Index(indexName));
+                if (!response.IsValid)
+                {
+                    throw new Exception($"add entity into index: [{indexName}] fail :{response.OriginalException.Message}");
+                }
             }
-
-            var response = await _elasticClient.IndexAsync(entity, x => x.Index(index));
-
-            if (!response.IsValid)
+            catch (Exception ex)
             {
-                throw new Exception($"add entity fail! :{response.OriginalException.Message}");
+                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
             }
-
         }
 
         public async Task InsertRangeAsync<T>(IEnumerable<T> entities, string index = "") where T : class
         {
-            throw new NotImplementedException();
-        }
+            try
+            {
+                var indexName = index.GetIndex<T>();
+                var exist = await IndexExistsAsync(indexName);
+                if (!exist)
+                {
+                    await ((ElasticClient)_elasticClient).CreateIndexAsync<T>(indexName);
+                    await AddAliasAsync(indexName, typeof(T).Name);
+                }
+                var bulkRequest = new BulkRequest(indexName)
+                {
+                    Operations = new List<IBulkOperation>()
+                };
+                var operations = entities.Select(o => new BulkIndexOperation<T>(o)).Cast<IBulkOperation>().ToList();
+                bulkRequest.Operations = operations;
+                var response = await _elasticClient.BulkAsync(bulkRequest);
 
-        public async Task BulkIndexAsync<T>(IEnumerable<T> entities, string index = "") where T : class
-        {
-            throw new NotImplementedException();
+                if (!response.IsValid)
+                    throw new Exception($"addRange entities into index: [{indexName}] fail :" + response.OriginalException.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+            }
         }
 
         public async Task<bool> IndexExistsAsync(string index)
@@ -54,39 +78,118 @@ namespace XieyiESLibrary.Provider
             return result.Exists;
         }
 
-        public async Task DeleteIndexAsync(string index)
+        public async Task DeleteIndexAsync<T>() where T : class
         {
-            throw new NotImplementedException();
+            try
+            {
+                var indexName = string.Empty.GetIndex<T>();
+                var exists = await IndexExistsAsync(indexName);
+                if (!exists) 
+                    return;
+
+                var response = await _elasticClient.Indices.DeleteAsync(indexName);
+                if (!response.IsValid)
+                    throw new Exception($"delete index: [{indexName}] fail:" + response.OriginalException.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+            }
         }
 
-        public async Task<DeleteByQueryResponse> DeleteByQueryAsync<T>(Expression<Func<T, bool>> expression, string index = "") where T : class, new()
+        public async Task<DeleteResponse> DeleteEntityByIdAsync<T>(string id , string index = "") where T : class
         {
-            throw new NotImplementedException();
+            try
+            {
+                var indexName = index.GetIndex<T>();
+                var exists = await IndexExistsAsync(indexName);
+                if (!exists)
+                    throw new Exception($"delete entity fail, because index:[{indexName}] is not found");
+
+                var request = new DocumentPath<T>(id);
+                var response = await _elasticClient.DeleteAsync(request);
+                if (!response.IsValid)
+                {
+                    throw new Exception("delete entity fail :" + response.OriginalException.Message);
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                return Activator.CreateInstance<DeleteResponse>();
+            }
+
         }
 
         public async Task<IUpdateResponse<T>> UpdateAsync<T>(string key, T entity, string index = "") where T : class
         {
-            throw new NotImplementedException();
+            try
+            {
+                var indexName = index.GetIndex<T>();
+                var request = new UpdateRequest<T, object>(indexName, key)
+                {
+                    Doc = entity
+                };
+
+                var response = await _elasticClient.UpdateAsync(request);
+                if (!response.IsValid)
+                    throw new Exception("update entity fail :" + response.OriginalException.Message);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                return Activator.CreateInstance<UpdateResponse<T>>();
+            }
         }
 
         public async Task<BulkAliasResponse> AddAliasAsync(string index, string alias)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = await _elasticClient.Indices.BulkAliasAsync(b => b.Add(al => al
+                        .Index(index)
+                        .Alias(alias)));
+
+                if (!response.IsValid)
+                    throw new Exception($"add Alias:[{alias}] on index:[{index}] fail:" + response.OriginalException.Message);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                return Activator.CreateInstance<BulkAliasResponse>();
+            }
         }
 
         public async Task<BulkAliasResponse> AddAliasAsync<T>(string alias) where T : class
         {
-            throw new NotImplementedException();
+            return await AddAliasAsync(string.Empty.GetIndex<T>(), alias);
         }
 
         public BulkAliasResponse RemoveAlias(string index, string alias)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var response = _elasticClient.Indices.BulkAlias(b => b.Remove(al => al
+                       .Index(index)
+                       .Alias(alias)));
+
+                if (!response.IsValid && response.ApiCall.HttpStatusCode != (int)HttpStatusCode.NotFound)
+                    throw new Exception($"remove Alias:[{alias}] on index:[{index}] fail:" + response.OriginalException?.Message);
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                return Activator.CreateInstance<BulkAliasResponse>();
+            }
         }
 
         public BulkAliasResponse RemoveAlias<T>(string alias) where T : class
         {
-            throw new NotImplementedException();
+            return RemoveAlias(string.Empty.GetIndex<T>(), alias);
         }
     }
 }
