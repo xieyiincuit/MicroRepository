@@ -10,7 +10,8 @@ namespace XieyiESLibrary
     {
         public static void AddESServiceInDI(this IServiceCollection services, Action<ESConfig> setupAction)
         {
-            if (setupAction == null) throw new ArgumentNullException(nameof(setupAction), "调用 ElasticSearch 配置时出错，未传入配置信息。");
+            if (setupAction == null)
+                throw new ArgumentNullException(nameof(setupAction), "调用 ElasticSearch 配置时出错，未传入配置信息。");
 
             services.Configure(setupAction);
 

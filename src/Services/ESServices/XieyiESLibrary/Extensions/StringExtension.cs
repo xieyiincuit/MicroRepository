@@ -3,16 +3,18 @@
     public static class StringExtension
     {
         /// <summary>
-        /// 保证indexName合理
+        ///     保证indexName合理
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static string GetIndex<T>(this string index) where T : class 
-            => string.IsNullOrWhiteSpace(index) ? typeof(T).Name.ToLower() : index;
+        public static string GetIndex<T>(this string index) where T : class
+        {
+            return string.IsNullOrWhiteSpace(index) ? typeof(T).Name.ToLower() : index;
+        }
 
         /// <summary>
-        /// 首字母小写
+        ///     首字母小写
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>

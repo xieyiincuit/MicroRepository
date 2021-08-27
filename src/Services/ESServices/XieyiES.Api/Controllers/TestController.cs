@@ -7,19 +7,25 @@ using XieyiESLibrary.Provider;
 
 namespace XieyiES.Api.Controllers
 {
+    /// <summary>
+    ///     测试控制器
+    /// </summary>
     [ApiController]
     [Route("api/v1/test")]
     public class TestController : ControllerBase
     {
         private readonly IESRepository _elasticClient;
 
+        /// <summary>
+        /// </summary>
+        /// <param name="elasticClient"></param>
         public TestController(IESRepository elasticClient)
         {
             _elasticClient = elasticClient;
         }
 
         /// <summary>
-        /// 新增数据
+        ///     新增一条数据
         /// </summary>
         /// <returns></returns>
         [HttpPost("userwallet")]
@@ -37,7 +43,7 @@ namespace XieyiES.Api.Controllers
         }
 
         /// <summary>
-        /// 批量新增
+        ///     批量新增多条数据
         /// </summary>
         /// <returns></returns>
         [HttpPost("userwallets")]
@@ -45,14 +51,14 @@ namespace XieyiES.Api.Controllers
         {
             var users = new List<UserWallet>
             {
-                new UserWallet
+                new()
                 {
                     UserId = "B123123123",
                     UserName = $"U{DateTime.Now.Second.ToString()}",
                     CreateTime = DateTime.Now,
                     Money = 80m
                 },
-                new UserWallet
+                new()
                 {
                     UserId = "B4564123156",
                     UserName = $"U{DateTime.Now.Second.ToString()}",

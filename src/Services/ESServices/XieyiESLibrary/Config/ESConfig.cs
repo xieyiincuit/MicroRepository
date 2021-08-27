@@ -5,27 +5,27 @@ using System.Linq;
 namespace XieyiESLibrary.Config
 {
     /// <summary>
-    /// ES basic config
+    ///     ES basic config
     /// </summary>
     public class ESConfig
     {
         /// <summary>
-        /// ElasticSearch ip address string
+        ///     ElasticSearch ip address string
         /// </summary>
         public string Urls { get; set; }
 
         /// <summary>
-        /// Authentication Name
+        ///     Authentication Name
         /// </summary>
         public string UserName { get; set; }
 
         /// <summary>
-        /// Authentication Password
+        ///     Authentication Password
         /// </summary>
         public string Password { get; set; }
 
         /// <summary>
-        /// if you have many node url，split they with '|'
+        ///     if you have many node url，split they with '|'
         /// </summary>
         public List<Uri> Uris => Urls.Split('|').Select(x => new Uri(x)).ToList();
     }

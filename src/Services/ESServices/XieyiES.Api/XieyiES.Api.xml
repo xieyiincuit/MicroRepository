@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<doc>
+	<assembly>
+		<name>XieyiES.Api</name>
+	</assembly>
+	<members>
+		<member name="M:XieyiES.Api.Controllers.TestController.InsertAsync">
+			<summary>
+				新增数据
+			</summary>
+			<returns></returns>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.TestController.InsertRangeAsync">
+			<summary>
+				批量新增
+			</summary>
+			<returns></returns>
+		</member>
+	</members>
+</doc>

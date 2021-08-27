@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -28,15 +27,11 @@ namespace XieyiESLibrary.Provider
             {
                 var indexName = index.GetIndex<T>();
                 var exist = await IndexExistsAsync(indexName);
-                if (!exist)
-                {
-                    await ((ElasticClient)_elasticClient).CreateIndexAsync<T>(indexName);
-                }
+                if (!exist) await ((ElasticClient) _elasticClient).CreateIndexAsync<T>(indexName);
                 var response = await _elasticClient.IndexAsync(entity, x => x.Index(indexName));
                 if (!response.IsValid)
-                {
-                    throw new Exception($"add entity into index: [{indexName}] fail :{response.OriginalException.Message}");
-                }
+                    throw new Exception(
+                        $"add entity into index: [{indexName}] fail :{response.OriginalException.Message}");
             }
             catch (Exception ex)
             {
@@ -52,9 +47,10 @@ namespace XieyiESLibrary.Provider
                 var exist = await IndexExistsAsync(indexName);
                 if (!exist)
                 {
-                    await ((ElasticClient)_elasticClient).CreateIndexAsync<T>(indexName);
+                    await ((ElasticClient) _elasticClient).CreateIndexAsync<T>(indexName);
                     await AddAliasAsync(indexName, typeof(T).Name);
                 }
+
                 var bulkRequest = new BulkRequest(indexName)
                 {
                     Operations = new List<IBulkOperation>()
@@ -64,7 +60,8 @@ namespace XieyiESLibrary.Provider
                 var response = await _elasticClient.BulkAsync(bulkRequest);
 
                 if (!response.IsValid)
-                    throw new Exception($"addRange entities into index: [{indexName}] fail :" + response.OriginalException.Message);
+                    throw new Exception($"addRange entities into index: [{indexName}] fail :" +
+                                        response.OriginalException.Message);
             }
             catch (Exception ex)
             {
@@ -84,7 +81,7 @@ namespace XieyiESLibrary.Provider
             {
                 var indexName = string.Empty.GetIndex<T>();
                 var exists = await IndexExistsAsync(indexName);
-                if (!exists) 
+                if (!exists)
                     return;
 
                 var response = await _elasticClient.Indices.DeleteAsync(indexName);
@@ -97,7 +94,7 @@ namespace XieyiESLibrary.Provider
             }
         }
 
-        public async Task<DeleteResponse> DeleteEntityByIdAsync<T>(string id , string index = "") where T : class
+        public async Task<DeleteResponse> DeleteEntityByIdAsync<T>(string id, string index = "") where T : class
         {
             try
             {
@@ -108,10 +105,7 @@ namespace XieyiESLibrary.Provider
 
                 var request = new DocumentPath<T>(id);
                 var response = await _elasticClient.DeleteAsync(request);
-                if (!response.IsValid)
-                {
-                    throw new Exception("delete entity fail :" + response.OriginalException.Message);
-                }
+                if (!response.IsValid) throw new Exception("delete entity fail :" + response.OriginalException.Message);
                 return response;
             }
             catch (Exception ex)
@@ -119,7 +113,6 @@ namespace XieyiESLibrary.Provider
                 _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
                 return Activator.CreateInstance<DeleteResponse>();
             }
-
         }
 
         public async Task<IUpdateResponse<T>> UpdateAsync<T>(string key, T entity, string index = "") where T : class
@@ -149,11 +142,12 @@ namespace XieyiESLibrary.Provider
             try
             {
                 var response = await _elasticClient.Indices.BulkAliasAsync(b => b.Add(al => al
-                        .Index(index)
-                        .Alias(alias)));
+                    .Index(index)
+                    .Alias(alias)));
 
                 if (!response.IsValid)
-                    throw new Exception($"add Alias:[{alias}] on index:[{index}] fail:" + response.OriginalException.Message);
+                    throw new Exception($"add Alias:[{alias}] on index:[{index}] fail:" +
+                                        response.OriginalException.Message);
                 return response;
             }
             catch (Exception ex)
@@ -173,11 +167,12 @@ namespace XieyiESLibrary.Provider
             try
             {
                 var response = _elasticClient.Indices.BulkAlias(b => b.Remove(al => al
-                       .Index(index)
-                       .Alias(alias)));
+                    .Index(index)
+                    .Alias(alias)));
 
-                if (!response.IsValid && response.ApiCall.HttpStatusCode != (int)HttpStatusCode.NotFound)
-                    throw new Exception($"remove Alias:[{alias}] on index:[{index}] fail:" + response.OriginalException?.Message);
+                if (!response.IsValid && response.ApiCall.HttpStatusCode != (int) HttpStatusCode.NotFound)
+                    throw new Exception($"remove Alias:[{alias}] on index:[{index}] fail:" +
+                                        response.OriginalException?.Message);
                 return response;
             }
             catch (Exception ex)
