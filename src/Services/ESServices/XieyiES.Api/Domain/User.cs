@@ -1,49 +1,32 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using XieyiESLibrary.Entity;
 
 namespace XieyiES.Api.Domain
 {
-    /// <summary>
-    ///     test entity
-    /// </summary>
     public class UserWallet : ESBaseEntity
     {
-        /// <summary>
-        /// </summary>
+        [Required]
         public string UserId { get; set; }
 
-        /// <summary>
-        /// </summary>
+        [Required]
         public string UserName { get; set; }
 
-        /// <summary>
-        /// </summary>
         public DateTime CreateTime { get; set; }
 
-        /// <summary>
-        /// </summary>
         public decimal Money { get; set; }
     }
 
-    /// <summary>
-    ///     test entity
-    /// </summary>
     public class Manager
     {
-        /// <summary>
-        /// </summary>
+        [Required]
         public string UserId { get; set; }
 
-        /// <summary>
-        /// </summary>
+        [Required]
         public string UserName { get; set; }
 
-        /// <summary>
-        /// </summary>
         public DateTime CreateTime { get; set; }
 
-        /// <summary>
-        /// </summary>
         public decimal Money { get; set; }
     }
 }

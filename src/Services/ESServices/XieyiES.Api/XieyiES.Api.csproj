@@ -1,19 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>E:\C#\github.com\MicroRepository\src\Services\ESServices\XieyiES.Api\XieyiES.Api.xml</DocumentationFile>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DocumentationFile>E:\C#\github.com\MicroRepository\src\Services\ESServices\XieyiES.Api\XieyiES.Api.xml</DocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\XieyiESLibrary\XieyiESLibrary.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\XieyiESLibrary\XieyiESLibrary.csproj" />
+	</ItemGroup>
 
 </Project>

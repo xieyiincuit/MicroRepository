@@ -1,21 +1,34 @@
 <?xml version="1.0"?>
-
 <doc>
-	<assembly>
-		<name>XieyiES.Api</name>
-	</assembly>
-	<members>
-		<member name="M:XieyiES.Api.Controllers.TestController.InsertAsync">
-			<summary>
-				新增数据
-			</summary>
-			<returns></returns>
-		</member>
-		<member name="M:XieyiES.Api.Controllers.TestController.InsertRangeAsync">
-			<summary>
-				批量新增
-			</summary>
-			<returns></returns>
-		</member>
-	</members>
+    <assembly>
+        <name>XieyiES.Api</name>
+    </assembly>
+    <members>
+        <member name="T:XieyiES.Api.Controllers.TestController">
+            <summary>
+                测试控制器
+            </summary>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.TestController.InsertAsync(XieyiES.Api.Domain.UserWallet)">
+            <summary>
+                新增一条数据
+            </summary>
+            <returns></returns>
+            <response code="201">Returns the newly created item</response>
+            <response code="400">If the item is null</response>    
+        </member>
+        <member name="M:XieyiES.Api.Controllers.TestController.InsertRangeAsync(System.Collections.Generic.List{XieyiES.Api.Domain.UserWallet})">
+            <summary>
+                批量新增多条数据
+            </summary>
+            <returns></returns>
+            <response code="201">Returns the newly created itemList</response>
+            <response code="400">If the item is null</response>    
+        </member>
+        <member name="T:XieyiES.Api.Extensions.MyLogEvents">
+            <summary>
+                日志事件 ID
+            </summary>
+        </member>
+    </members>
 </doc>

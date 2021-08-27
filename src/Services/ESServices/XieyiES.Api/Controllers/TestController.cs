@@ -1,8 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using XieyiES.Api.Domain;
+using XieyiES.Api.Extensions;
 using XieyiESLibrary.Provider;
 
 namespace XieyiES.Api.Controllers
@@ -15,30 +18,33 @@ namespace XieyiES.Api.Controllers
     public class TestController : ControllerBase
     {
         private readonly IESRepository _elasticClient;
+        private readonly ILogger<TestController> _logger;
 
-        /// <summary>
-        /// </summary>
-        /// <param name="elasticClient"></param>
-        public TestController(IESRepository elasticClient)
+        public TestController(IESRepository elasticClient, ILogger<TestController> logger)
         {
             _elasticClient = elasticClient;
+            _logger = logger;
         }
 
         /// <summary>
         ///     新增一条数据
         /// </summary>
         /// <returns></returns>
+        /// <response code="201">Returns the newly created item</response>
+        /// <response code="400">If the item is null</response>    
         [HttpPost("userwallet")]
-        public async Task<IActionResult> InsertAsync()
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(UserWallet), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> InsertAsync([FromBody] UserWallet user)
         {
-            var user = new UserWallet
+            if (user == null)
             {
-                UserId = "A112312312311",
-                UserName = $"U{DateTime.Now.Second.ToString()}",
-                CreateTime = DateTime.Now,
-                Money = 110m
-            };
+                return BadRequest("user can't be null");
+            }
+            _logger.LogDebug(MyLogEvents.TestItem, $"want to insert data : {JsonSerializer.Serialize(user)}");
             await _elasticClient.InsertAsync(user);
+
             return Ok(user);
         }
 
@@ -46,26 +52,20 @@ namespace XieyiES.Api.Controllers
         ///     批量新增多条数据
         /// </summary>
         /// <returns></returns>
+        /// <response code="201">Returns the newly created itemList</response>
+        /// <response code="400">If the item is null</response>    
         [HttpPost("userwallets")]
-        public async Task<IActionResult> InsertRangeAsync()
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(List<UserWallet>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> InsertRangeAsync(List<UserWallet> users)
         {
-            var users = new List<UserWallet>
+            if (users == null)
             {
-                new()
-                {
-                    UserId = "B123123123",
-                    UserName = $"U{DateTime.Now.Second.ToString()}",
-                    CreateTime = DateTime.Now,
-                    Money = 80m
-                },
-                new()
-                {
-                    UserId = "B4564123156",
-                    UserName = $"U{DateTime.Now.Second.ToString()}",
-                    CreateTime = DateTime.Now,
-                    Money = 90m
-                }
-            };
+                return BadRequest("users can't be null");
+            }
+
+            _logger.LogDebug(MyLogEvents.TestItem, $"want to insert lot of data : {JsonSerializer.Serialize(users)}");
             await _elasticClient.InsertRangeAsync(users);
             return Ok(users);
         }

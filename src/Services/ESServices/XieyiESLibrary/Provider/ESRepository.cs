@@ -35,7 +35,7 @@ namespace XieyiESLibrary.Provider
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
             }
         }
 
@@ -65,7 +65,7 @@ namespace XieyiESLibrary.Provider
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
             }
         }
 
@@ -90,7 +90,7 @@ namespace XieyiESLibrary.Provider
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
             }
         }
 
@@ -110,7 +110,7 @@ namespace XieyiESLibrary.Provider
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
                 return Activator.CreateInstance<DeleteResponse>();
             }
         }
@@ -132,7 +132,7 @@ namespace XieyiESLibrary.Provider
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
                 return Activator.CreateInstance<UpdateResponse<T>>();
             }
         }
@@ -152,7 +152,7 @@ namespace XieyiESLibrary.Provider
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
                 return Activator.CreateInstance<BulkAliasResponse>();
             }
         }
@@ -177,7 +177,7 @@ namespace XieyiESLibrary.Provider
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Message:{ex.Message} | Stack: {ex.StackTrace}");
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
                 return Activator.CreateInstance<BulkAliasResponse>();
             }
         }
