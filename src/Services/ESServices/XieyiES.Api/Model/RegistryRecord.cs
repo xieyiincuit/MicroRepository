@@ -1,7 +1,7 @@
 ﻿using System;
 using XieyiESLibrary.Entity;
 
-namespace XieyiES.Api.Domain
+namespace XieyiES.Api.Model
 {
     public class RegistryRecord : ESBaseEntity
     {

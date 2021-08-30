@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using XieyiES.Api.Domain;
-using XieyiES.Api.Extensions;
+using Serilog;
+using XieyiES.Api.Model;
 using XieyiESLibrary.Provider;
+
 
 namespace XieyiES.Api.Controllers
 {
@@ -18,12 +19,13 @@ namespace XieyiES.Api.Controllers
     public class TestController : ControllerBase
     {
         private readonly IESRepository _elasticClient;
-        private readonly ILogger<TestController> _logger;
+        private readonly ILogger _logger;
 
-        public TestController(IESRepository elasticClient, ILogger<TestController> logger)
+
+        public TestController(IESRepository elasticClient, ILogger logger)
         {
-            _elasticClient = elasticClient;
-            _logger = logger;
+            _elasticClient = elasticClient ?? throw new ArgumentNullException(nameof(elasticClient));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -43,9 +45,8 @@ namespace XieyiES.Api.Controllers
             {
                 return BadRequest("user can't be null");
             }
-            _logger.LogDebug(MyLogEvents.TestItem, $"to insert data : {JsonSerializer.Serialize(userWallet)}");
+            _logger.Debug($"to insert data : {JsonSerializer.Serialize(userWallet)}");
             await _elasticClient.InsertAsync(userWallet);
-
             return Ok(userWallet);
         }
 
@@ -67,7 +68,7 @@ namespace XieyiES.Api.Controllers
                 return BadRequest("users can't be null");
             }
 
-            _logger.LogDebug(MyLogEvents.TestItem, $"to insert lot of data : {JsonSerializer.Serialize(userWallets)}");
+            _logger.Debug($"to insert lot of data : {JsonSerializer.Serialize(userWallets)}");
             await _elasticClient.InsertRangeAsync(userWallets);
             return Ok(userWallets);
         }
@@ -81,7 +82,7 @@ namespace XieyiES.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteIndexAsync()
         {
-            _logger.LogDebug(MyLogEvents.DeleteItem, "to delete userwallet index");
+            _logger.Debug("to delete userwallet index");
             await _elasticClient.DeleteIndexAsync<UserWallet>();
             return NoContent();
         }
@@ -90,22 +91,31 @@ namespace XieyiES.Api.Controllers
         ///     根据Id删除索引中的文件
         /// </summary>
         /// <param name="id">doc's Id</param>
-        /// <param name="indexName"></param>
-        /// <response code="204">Returns NoContent</response>
+        /// <param name="index"></param>
+        /// <response code="204">Delete Returns NoContent</response>
         /// <response code="400">If the id is null</response> 
         /// <returns></returns>
         [HttpDelete("userwallet/{id}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteIndexAsync(string id, [FromQuery] string indexName = "")
+        public async Task<IActionResult> DeleteIndexAsync(string id, string index)
         {
-            if (id == null)
+            if (string.IsNullOrWhiteSpace(id))
             {
-                return BadRequest("can't find this id");
+                return BadRequest("id can't be null");
             }
-            _logger.LogDebug(MyLogEvents.DeleteItem, $"to delete doc Item [Id:{id}] in [{indexName}]");
-            await _elasticClient.DeleteEntityByIdAsync<UserWallet>(id);
+            _logger.Debug($"to delete doc Item [Id:{id}] ");
+            await _elasticClient.DeleteEntityByIdAsync<UserWallet>(id, index);
             return NoContent();
+        }
+
+
+        [HttpDelete("userwallet/query")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<IActionResult> DeleteByQueryAsync()
+        {
+            await _elasticClient.DeleteByQuery<UserWallet>(x=>x.UserName == "xieyi");
+            return Ok();
         }
 
         /// <summary>
@@ -123,8 +133,7 @@ namespace XieyiES.Api.Controllers
             {
                 return BadRequest("can't find this id");
             }
-
-            _logger.LogDebug(MyLogEvents.UpdateItem, $"want to update userwallet:[{id}] to: {JsonSerializer.Serialize(User)}");
+            _logger.Debug($"want to update userwallet:[{id}] to: {JsonSerializer.Serialize(userWallet)}");
             await _elasticClient.UpdateAsync(id, userWallet);
             return Ok(userWallet);
         }

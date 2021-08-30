@@ -13,6 +13,7 @@
             <summary>
                 新增一条数据
             </summary>
+            <param name="userWallet"></param>
             <returns></returns>
             <response code="201">Returns the newly created item</response>
             <response code="400">If the item is null</response>    
@@ -21,9 +22,35 @@
             <summary>
                 批量新增多条数据
             </summary>
+            <param name="userWallets"></param>
             <returns></returns>
             <response code="201">Returns the newly created itemList</response>
-            <response code="400">If the item is null</response>    
+            <response code="400">If the item is null</response>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.TestController.DeleteIndexAsync">
+            <summary>
+                删除userwallet索引
+            </summary>
+            <returns></returns>
+            <response code="204">delete return NoContent</response>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.TestController.DeleteIndexAsync(System.String,System.String)">
+            <summary>
+                根据Id删除索引中的文件
+            </summary>
+            <param name="id">doc's Id</param>
+            <param name="index"></param>
+            <response code="204">Returns NoContent</response>
+            <response code="400">If the id is null</response> 
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.TestController.UpdateEntityAsync(System.String,XieyiES.Api.Domain.UserWallet)">
+            <summary>
+                通过id更新实体信息
+            </summary>
+            <param name="id"></param>
+            <param name="userWallet"></param>
+            <returns></returns>
         </member>
         <member name="T:XieyiES.Api.Extensions.MyLogEvents">
             <summary>
