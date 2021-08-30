@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Nest;
+using XieyiESLibrary.ExpressionsToQuery;
 using XieyiESLibrary.Extensions;
 using XieyiESLibrary.Provider.Base;
 
@@ -104,15 +106,36 @@ namespace XieyiESLibrary.Provider
                     throw new Exception($"delete entity fail, because index:[{indexName}] is not found");
 
                 var documentPath = new DocumentPath<T>(id);
-                //var selector = new Func<DeleteDescriptor<T>, IDeleteRequest>();
-                var response = await _elasticClient.DeleteAsync(documentPath);
-                if (!response.IsValid) throw new Exception("delete entity fail :" + response.OriginalException.Message);
+                var response = await _elasticClient.DeleteAsync(documentPath, x=>x.Index(indexName));
+                if (!response.IsValid) 
+                    throw new Exception("delete entity fail :" + response.OriginalException.Message);
                 return response;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
                 return Activator.CreateInstance<DeleteResponse>();
+            }
+        }
+
+        public async Task<DeleteByQueryResponse> DeleteByQuery<T>(Expression<Func<T, bool>> expression, string index = "")
+            where T : class, new()
+        {
+            try
+            {
+                var indexName = index.GetIndex<T>();
+                var request = new DeleteByQueryRequest<T>(indexName);
+                var build = new QueryBuilder<T>();
+                request.Query = build.GetQueryContainer(expression);
+                var response = await _elasticClient.DeleteByQueryAsync(request);
+                if (!response.IsValid)
+                    throw new Exception("delete fail:" + response.OriginalException.Message);
+                return response;
+            }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
+                return Activator.CreateInstance<DeleteByQueryResponse>();
             }
         }
 
@@ -147,8 +170,7 @@ namespace XieyiESLibrary.Provider
                     .Alias(alias)));
 
                 if (!response.IsValid)
-                    throw new Exception($"add Alias:[{alias}] on index:[{index}] fail:" +
-                                        response.OriginalException.Message);
+                    throw new Exception($"add Alias:[{alias}] on index:[{index}] fail:" + response.OriginalException.Message);
                 return response;
             }
             catch (Exception ex)
@@ -156,11 +178,6 @@ namespace XieyiESLibrary.Provider
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
                 return Activator.CreateInstance<BulkAliasResponse>();
             }
-        }
-
-        public async Task<BulkAliasResponse> AddAliasAsync<T>(string alias) where T : class
-        {
-            return await AddAliasAsync(string.Empty.GetIndex<T>(), alias);
         }
 
         public BulkAliasResponse RemoveAlias(string index, string alias)
@@ -181,6 +198,10 @@ namespace XieyiESLibrary.Provider
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
                 return Activator.CreateInstance<BulkAliasResponse>();
             }
+        }
+        public async Task<BulkAliasResponse> AddAliasAsync<T>(string alias) where T : class
+        {
+            return await AddAliasAsync(string.Empty.GetIndex<T>(), alias);
         }
 
         public BulkAliasResponse RemoveAlias<T>(string alias) where T : class

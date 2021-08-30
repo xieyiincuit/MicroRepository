@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Nest;
 
@@ -68,9 +70,18 @@ namespace XieyiESLibrary.Provider
         ///     删除索引 (支持根据实体建立的索引删除)
         ///     T is entity for a index
         /// </summary>
-        /// <param name="indexName"></param>
+        /// <param name="index"></param>
         /// <returns></returns>
         Task DeleteIndexAsync<T>(string index = "") where T : class;
+
+        /// <summary>
+        ///     通过Linq查询删除实体
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        Task<DeleteByQueryResponse> DeleteByQuery<T>(Expression<Func<T, bool>> expression, string index = "") where T : class, new();
 
         #endregion
 
