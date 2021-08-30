@@ -68,8 +68,9 @@ namespace XieyiESLibrary.Provider
         ///     删除索引 (支持根据实体建立的索引删除)
         ///     T is entity for a index
         /// </summary>
+        /// <param name="indexName"></param>
         /// <returns></returns>
-        Task DeleteIndexAsync<T>() where T : class;
+        Task DeleteIndexAsync<T>(string index = "") where T : class;
 
         #endregion
 

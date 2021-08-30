@@ -69,17 +69,17 @@ namespace XieyiESLibrary.Provider
             }
         }
 
-        public async Task<bool> IndexExistsAsync(string index)
+        public async Task<bool> IndexExistsAsync(string index = "")
         {
             var result = await _elasticClient.Indices.ExistsAsync(index);
             return result.Exists;
         }
 
-        public async Task DeleteIndexAsync<T>() where T : class
+        public async Task DeleteIndexAsync<T>(string index = "") where T : class
         {
             try
             {
-                var indexName = string.Empty.GetIndex<T>();
+                var indexName = index.GetIndex<T>();
                 var exists = await IndexExistsAsync(indexName);
                 if (!exists)
                     return;
@@ -103,8 +103,9 @@ namespace XieyiESLibrary.Provider
                 if (!exists)
                     throw new Exception($"delete entity fail, because index:[{indexName}] is not found");
 
-                var request = new DocumentPath<T>(id);
-                var response = await _elasticClient.DeleteAsync(request);
+                var documentPath = new DocumentPath<T>(id);
+                //var selector = new Func<DeleteDescriptor<T>, IDeleteRequest>();
+                var response = await _elasticClient.DeleteAsync(documentPath);
                 if (!response.IsValid) throw new Exception("delete entity fail :" + response.OriginalException.Message);
                 return response;
             }

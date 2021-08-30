@@ -54,9 +54,8 @@ namespace XieyiES.Api
                 });
             }
 
+            app.UseHsts();
             app.UseHttpsRedirection();
-
-
             app.UseRouting();
 
             app.UseAuthorization();

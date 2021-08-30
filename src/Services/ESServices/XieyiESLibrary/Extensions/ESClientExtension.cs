@@ -31,8 +31,8 @@ namespace XieyiESLibrary.Extensions
                     Settings = new IndexSettings
                     {
                         NumberOfReplicas = numberOfReplicas,
-                        NumberOfShards = numberOfShards
-
+                        NumberOfShards = numberOfShards,
+                        RefreshInterval = TimeSpan.FromSeconds(1)
                         // index.blocks.read_only：设为true,则索引以及索引的元数据只可读
                         // index.blocks.read_only_allow_delete：设为true，只读时允许删除。
                         // index.blocks.read：设为true，则不可读。
