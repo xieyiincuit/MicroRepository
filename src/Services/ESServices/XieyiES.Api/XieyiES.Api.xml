@@ -4,53 +4,76 @@
         <name>XieyiES.Api</name>
     </assembly>
     <members>
-        <member name="T:XieyiES.Api.Controllers.TestController">
+        <member name="T:XieyiES.Api.Controllers.UserController">
             <summary>
                 测试控制器
             </summary>
         </member>
-        <member name="M:XieyiES.Api.Controllers.TestController.InsertAsync(XieyiES.Api.Domain.UserWallet)">
+        <member name="M:XieyiES.Api.Controllers.UserController.InsertUserAsync(XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto)">
             <summary>
                 新增一条数据
             </summary>
-            <param name="userWallet"></param>
+            <param name="addDto"></param>
             <returns></returns>
-            <response code="201">Returns the newly created item</response>
+            <response code="200">Returns the newly created item</response>
             <response code="400">If the item is null</response>    
         </member>
-        <member name="M:XieyiES.Api.Controllers.TestController.InsertRangeAsync(System.Collections.Generic.List{XieyiES.Api.Domain.UserWallet})">
+        <member name="M:XieyiES.Api.Controllers.UserController.InsertUsersAsync(System.Collections.Generic.List{XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto})">
             <summary>
                 批量新增多条数据
             </summary>
-            <param name="userWallets"></param>
+            <param name="addDtos"></param>
             <returns></returns>
-            <response code="201">Returns the newly created itemList</response>
+            <response code="200">Returns the newly created itemList</response>
             <response code="400">If the item is null</response>
         </member>
-        <member name="M:XieyiES.Api.Controllers.TestController.DeleteIndexAsync">
+        <member name="M:XieyiES.Api.Controllers.UserController.DeleteIndexAsync">
             <summary>
-                删除userwallet索引
+                删除user索引
             </summary>
             <returns></returns>
             <response code="204">delete return NoContent</response>
         </member>
-        <member name="M:XieyiES.Api.Controllers.TestController.DeleteIndexAsync(System.String,System.String)">
+        <member name="M:XieyiES.Api.Controllers.UserController.DeleteUserAsync(System.String,System.String)">
             <summary>
                 根据Id删除索引中的文件
             </summary>
-            <param name="id">doc's Id</param>
+            <param name="id"></param>
             <param name="index"></param>
-            <response code="204">Returns NoContent</response>
+            <response code="204">Delete Returns NoContent</response>
             <response code="400">If the id is null</response> 
             <returns></returns>
         </member>
-        <member name="M:XieyiES.Api.Controllers.TestController.UpdateEntityAsync(System.String,XieyiES.Api.Domain.UserWallet)">
+        <member name="M:XieyiES.Api.Controllers.UserController.DeleteUsersAsync(System.Collections.Generic.IReadOnlyList{System.String})">
+            <summary>
+                通过数据唯一标识批量删除数据
+            </summary>
+            <param name="ids"></param>
+            <response code="204">Delete Returns NoContent</response>
+            <response code="400">If the ids is null</response> 
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserController.DeleteUserByQueryAsync(System.String,System.String,XieyiESLibrary.Entity.QueryType,XieyiESLibrary.Entity.ConstraintType)">
+            <summary>
+                根据检索条件删除
+            </summary>
+            <param name="userName"></param>
+            <param name="userId"></param>
+            <param name="queryType">0-And 1-Or</param>
+            <param name="constraintType">0-Loose 1-Tight</param>
+            <response code="400">if query item is null</response>
+            <response code="204">Delete Return NoContent</response>
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserController.UpdateUserAsync(System.String,XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto)">
             <summary>
                 通过id更新实体信息
             </summary>
             <param name="id"></param>
-            <param name="userWallet"></param>
+            <param name="updateDto"></param>
             <returns></returns>
+            <response code="200">Return newly Update Entity</response>
+            <response code="400">If the id is null</response> 
         </member>
         <member name="T:XieyiES.Api.Extensions.MyLogEvents">
             <summary>

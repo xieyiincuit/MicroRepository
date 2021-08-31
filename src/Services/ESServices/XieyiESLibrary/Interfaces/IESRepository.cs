@@ -7,7 +7,7 @@ using Nest;
 namespace XieyiESLibrary.Interfaces
 {
     /// <summary>
-    ///     ES CURD Repository
+    ///     ES CUD Repository
     /// </summary>
     public interface IESRepository
     {
