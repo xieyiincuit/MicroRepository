@@ -4,5 +4,12 @@
     {
         And,
         Or
-    } 
+    }
+
+    public enum ConstraintType
+    {
+        Loose,
+        Tight
+    }
+
 }
