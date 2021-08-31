@@ -21,7 +21,7 @@ namespace XieyiESLibrary.Provider
         /// <param name="entity"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        Task<IUpdateResponse<T>> UpdateAsync<T>(string key, T entity, string index = "") where T : class;
+        Task<bool> UpdateAsync<T>(string key, T entity, string index = "") where T : class;
 
         #endregion
 
@@ -34,7 +34,7 @@ namespace XieyiESLibrary.Provider
         /// <param name="entity"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        Task InsertAsync<T>(T entity, string index = "") where T : class;
+        Task<bool> InsertAsync<T>(T entity, string index = "") where T : class;
 
         /// <summary>
         ///     Bulk批量新增
@@ -43,7 +43,7 @@ namespace XieyiESLibrary.Provider
         /// <param name="entities"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        Task InsertRangeAsync<T>(IEnumerable<T> entities, string index = "") where T : class;
+        Task<bool> InsertRangeAsync<T>(IEnumerable<T> entities, string index = "") where T : class;
 
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace XieyiESLibrary.Provider
         /// <param name="id"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        Task<DeleteResponse> DeleteEntityByIdAsync<T>(string id, string index = "") where T : class;
+        Task<bool> DeleteEntityByIdAsync<T>(string id, string index = "") where T : class;
 
         /// <summary>
         ///     删除索引 (支持根据实体建立的索引删除)
@@ -72,7 +72,15 @@ namespace XieyiESLibrary.Provider
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        Task DeleteIndexAsync<T>(string index = "") where T : class;
+        Task<bool> DeleteIndexAsync<T>(string index = "") where T : class;
+
+        /// <summary>
+        ///     通过数据唯一标识批量删除数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="deleteEntity"></param>
+        /// <returns></returns>
+        Task<bool> DeleteManyAsync<T>(List<T> deleteEntity) where T : class;
 
         /// <summary>
         ///     通过Linq查询删除实体
@@ -81,7 +89,7 @@ namespace XieyiESLibrary.Provider
         /// <param name="expression"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        Task<DeleteByQueryResponse> DeleteByQuery<T>(Expression<Func<T, bool>> expression, string index = "") where T : class, new();
+        Task<bool> DeleteByQuery<T>(Expression<Func<T, bool>> expression, string index = "") where T : class, new();
 
         #endregion
 

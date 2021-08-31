@@ -23,25 +23,27 @@ namespace XieyiESLibrary.Provider
             _elasticClient = clientProvider.ElasticClient;
         }
 
-        public async Task InsertAsync<T>(T entity, string index = "") where T : class
+        public async Task<bool> InsertAsync<T>(T entity, string index = "") where T : class
         {
             try
             {
                 var indexName = index.GetIndex<T>();
                 var exist = await IndexExistsAsync(indexName);
                 if (!exist) await ((ElasticClient) _elasticClient).CreateIndexAsync<T>(indexName);
-                var response = await _elasticClient.IndexAsync(entity, x => x.Index(indexName));
+                var response = await _elasticClient.IndexAsync(entity, x => x.Index(indexName)).ConfigureAwait(false);
                 if (!response.IsValid)
                     throw new Exception(
                         $"add entity into index: [{indexName}] fail :{response.OriginalException.Message}");
+                return response.IsValid;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
+                return false;
             }
         }
 
-        public async Task InsertRangeAsync<T>(IEnumerable<T> entities, string index = "") where T : class
+        public async Task<bool> InsertRangeAsync<T>(IEnumerable<T> entities, string index = "") where T : class
         {
             try
             {
@@ -49,7 +51,7 @@ namespace XieyiESLibrary.Provider
                 var exist = await IndexExistsAsync(indexName);
                 if (!exist)
                 {
-                    await ((ElasticClient) _elasticClient).CreateIndexAsync<T>(indexName);
+                    await ((ElasticClient) _elasticClient).CreateIndexAsync<T>(indexName).ConfigureAwait(false);
                     await AddAliasAsync(indexName, typeof(T).Name);
                 }
 
@@ -59,15 +61,17 @@ namespace XieyiESLibrary.Provider
                 };
                 var operations = entities.Select(o => new BulkIndexOperation<T>(o)).Cast<IBulkOperation>().ToList();
                 bulkRequest.Operations = operations;
-                var response = await _elasticClient.BulkAsync(bulkRequest);
+                var response = await _elasticClient.BulkAsync(bulkRequest).ConfigureAwait(false);
 
                 if (!response.IsValid)
                     throw new Exception($"addRange entities into index: [{indexName}] fail :" +
                                         response.OriginalException.Message);
+                return response.IsValid;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
+                return false;
             }
         }
 
@@ -77,26 +81,28 @@ namespace XieyiESLibrary.Provider
             return result.Exists;
         }
 
-        public async Task DeleteIndexAsync<T>(string index = "") where T : class
+        public async Task<bool> DeleteIndexAsync<T>(string index = "") where T : class
         {
             try
             {
                 var indexName = index.GetIndex<T>();
                 var exists = await IndexExistsAsync(indexName);
                 if (!exists)
-                    return;
+                    throw new Exception($" index: [{indexName}] not exists");
 
-                var response = await _elasticClient.Indices.DeleteAsync(indexName);
+                var response = await _elasticClient.Indices.DeleteAsync(indexName).ConfigureAwait(false);
                 if (!response.IsValid)
                     throw new Exception($"delete index: [{indexName}] fail:" + response.OriginalException.Message);
+                return response.IsValid;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
+                return false;
             }
         }
 
-        public async Task<DeleteResponse> DeleteEntityByIdAsync<T>(string id, string index = "") where T : class
+        public async Task<bool> DeleteEntityByIdAsync<T>(string id, string index = "") where T : class
         {
             try
             {
@@ -106,19 +112,38 @@ namespace XieyiESLibrary.Provider
                     throw new Exception($"delete entity fail, because index:[{indexName}] is not found");
 
                 var documentPath = new DocumentPath<T>(id);
-                var response = await _elasticClient.DeleteAsync(documentPath, x=>x.Index(indexName));
+                var response = await _elasticClient.DeleteAsync(documentPath, x=>x.Index(indexName)).ConfigureAwait(false);
                 if (!response.IsValid) 
                     throw new Exception("delete entity fail :" + response.OriginalException.Message);
-                return response;
+                return response.IsValid;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
-                return Activator.CreateInstance<DeleteResponse>();
+                return false;
             }
         }
 
-        public async Task<DeleteByQueryResponse> DeleteByQuery<T>(Expression<Func<T, bool>> expression, string index = "")
+        public async Task<bool> DeleteManyAsync<T>(List<T> deleteEntity) where T : class
+        {
+            try
+            {
+                var indexName = string.Empty.GetIndex<T>();
+                var exists = await IndexExistsAsync(indexName);
+                if (!exists)
+                    throw new Exception($"delete entity fail, because index:[{indexName}] is not found");
+
+                var response = await _elasticClient.DeleteManyAsync(deleteEntity, indexName).ConfigureAwait(false);
+                return response.IsValid;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteByQuery<T>(Expression<Func<T, bool>> expression, string index = "")
             where T : class, new()
         {
             try
@@ -127,19 +152,19 @@ namespace XieyiESLibrary.Provider
                 var request = new DeleteByQueryRequest<T>(indexName);
                 var build = new QueryBuilder<T>();
                 request.Query = build.GetQueryContainer(expression);
-                var response = await _elasticClient.DeleteByQueryAsync(request);
+                var response = await _elasticClient.DeleteByQueryAsync(request).ConfigureAwait(false);
                 if (!response.IsValid)
                     throw new Exception("delete fail:" + response.OriginalException.Message);
-                return response;
+                return response.IsValid;
             }
             catch (Exception ex) 
             {
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
-                return Activator.CreateInstance<DeleteByQueryResponse>();
+                return false;
             }
         }
 
-        public async Task<IUpdateResponse<T>> UpdateAsync<T>(string key, T entity, string index = "") where T : class
+        public async Task<bool> UpdateAsync<T>(string key, T entity, string index = "") where T : class
         {
             try
             {
@@ -148,16 +173,15 @@ namespace XieyiESLibrary.Provider
                 {
                     Doc = entity
                 };
-
-                var response = await _elasticClient.UpdateAsync(request);
+                var response = await _elasticClient.UpdateAsync(request).ConfigureAwait(false);
                 if (!response.IsValid)
                     throw new Exception("update entity fail :" + response.OriginalException.Message);
-                return response;
+                return response.IsValid;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
-                return Activator.CreateInstance<UpdateResponse<T>>();
+                return false;
             }
         }
 
