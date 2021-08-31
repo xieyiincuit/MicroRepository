@@ -42,6 +42,7 @@ namespace XieyiES.Api
             });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddSingleton<ILogger>(Log.Logger);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
