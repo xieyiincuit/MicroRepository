@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Nest;
 using XieyiESLibrary.Config;
-using XieyiESLibrary.Provider.Base;
+using XieyiESLibrary.Interfaces;
 
-namespace XieyiESLibrary.Provider
+namespace XieyiESLibrary.Services
 {
     public class ESClientProvider : IESClientProvider
     {

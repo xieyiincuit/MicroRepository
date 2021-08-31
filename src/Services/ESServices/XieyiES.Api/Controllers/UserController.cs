@@ -11,7 +11,7 @@ using Serilog;
 using XieyiES.Api.Model;
 using XieyiES.Api.Model.DtoModel;
 using XieyiESLibrary.Entity;
-using XieyiESLibrary.Provider;
+using XieyiESLibrary.Interfaces;
 
 
 namespace XieyiES.Api.Controllers

@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using XieyiESLibrary.Config;
-using XieyiESLibrary.Provider;
-using XieyiESLibrary.Provider.Base;
+using XieyiESLibrary.Interfaces;
+using XieyiESLibrary.Services;
 
 namespace XieyiESLibrary
 {

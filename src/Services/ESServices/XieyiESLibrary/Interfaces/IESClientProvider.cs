@@ -1,6 +1,6 @@
 ﻿using Nest;
 
-namespace XieyiESLibrary.Provider.Base
+namespace XieyiESLibrary.Interfaces
 {
     public interface IESClientProvider
     {

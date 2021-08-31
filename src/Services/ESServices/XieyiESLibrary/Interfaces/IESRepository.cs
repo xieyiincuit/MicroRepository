@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Nest;
 
-namespace XieyiESLibrary.Provider
+namespace XieyiESLibrary.Interfaces
 {
     /// <summary>
     ///     ES CURD Repository

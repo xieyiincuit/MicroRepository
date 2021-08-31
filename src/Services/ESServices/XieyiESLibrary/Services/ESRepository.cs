@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 using Nest;
 using XieyiESLibrary.ExpressionsToQuery;
 using XieyiESLibrary.Extensions;
-using XieyiESLibrary.Provider.Base;
+using XieyiESLibrary.Interfaces;
 
-namespace XieyiESLibrary.Provider
+namespace XieyiESLibrary.Services
 {
     public class ESRepository : IESRepository
     {
