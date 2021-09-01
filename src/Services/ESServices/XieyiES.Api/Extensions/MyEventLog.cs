@@ -1,7 +1,7 @@
 ﻿namespace XieyiES.Api.Extensions
 {
     /// <summary>
-    ///     日志事件 ID
+    ///     日志事件 ID 用于MicrosoftLogging
     /// </summary>
     public class MyLogEvents
     {
