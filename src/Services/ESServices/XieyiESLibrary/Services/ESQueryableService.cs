@@ -74,13 +74,13 @@ namespace XieyiESLibrary.Services
             }
         }
 
-        public List<T> ToPageList(int pageIndex, int pageSize)
+        public async Task<List<T>> ToPageListAsync(int pageIndex, int pageSize)
         {
             try
             {
                 _request.From = ((pageIndex < 1 ? 1 : pageIndex) - 1) * pageSize;
                 _request.Size = pageSize;
-                return _ToList<T>();
+                return await _ToListAsync<T>();
             }
             catch (Exception ex)
             {
@@ -94,7 +94,7 @@ namespace XieyiESLibrary.Services
         {
             try
             {
-                var list = ToPageList(pageIndex, pageSize);
+                var list = ToPageListAsync(pageIndex, pageSize).GetAwaiter().GetResult();
                 totalNumber = _totalNumber;
                 return list;
             }

@@ -36,7 +36,7 @@ namespace XieyiESLibrary.Interfaces
         /// <param name="pageIndex"></param>
         /// <param name="pageSize"></param>
         /// <returns></returns>
-        List<T> ToPageList(int pageIndex, int pageSize);
+        Task<List<T>> ToPageListAsync(int pageIndex, int pageSize);
 
         /// <summary>
         ///     分页返回查询结果（返回查询个数总数）

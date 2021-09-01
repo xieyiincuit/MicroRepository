@@ -4,7 +4,7 @@ using XieyiESLibrary.Interfaces;
 
 namespace XieyiESLibrary.Services
 {
-    public sealed class ESSearchService
+    public sealed class ESSearchService : IESSearch
     {
         private readonly ILogger<ESSearchService> _logger;
         private readonly IElasticClient _elasticClient;
