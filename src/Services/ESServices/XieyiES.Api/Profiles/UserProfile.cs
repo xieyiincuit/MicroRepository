@@ -1,9 +1,10 @@
-﻿using XieyiES.Api.Model;
+﻿using AutoMapper;
+using XieyiES.Api.Model;
 using XieyiES.Api.Model.DtoModel;
 
-namespace XieyiES.Api.Profile
+namespace XieyiES.Api.Profiles
 {
-    public class UserProfile : AutoMapper.Profile
+    public class UserProfile : Profile
     {
         public UserProfile()
         {
