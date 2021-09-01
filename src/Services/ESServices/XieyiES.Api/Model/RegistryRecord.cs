@@ -9,6 +9,8 @@ namespace XieyiES.Api.Model
 
         public string UserName { get; set; }
 
-        public DateTime RegistryTime { get; set; }
+        public DateTimeOffset RegistryTime => DateTimeOffset.Now;
+
+        public string RegistryArea { get; set; }
     }
 }

@@ -20,17 +20,25 @@ namespace XieyiES.Api.Controllers
     ///     测试控制器
     /// </summary>
     [ApiController]
-    [Route("api/v1/test")]
+    [Route("api/v1/xieyi")]
     public class UserController : ControllerBase
     {
-        private readonly IESRepository _elasticClient;
+        /// <summary>
+        ///     自定义仓储
+        /// </summary>
+        private readonly IESRepository _elasticRepository;
+
+        /// <summary>
+        ///     自定义搜索
+        /// </summary>
+        private readonly IESSearch _elasticSearch;
+
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
-
-
-        public UserController(IESRepository elasticClient, ILogger logger, IMapper mapper)
+        public UserController(IESRepository elasticRepository, IESSearch elasticSearch, ILogger logger, IMapper mapper)
         {
-            _elasticClient = elasticClient ?? throw new ArgumentNullException(nameof(elasticClient));
+            _elasticRepository = elasticRepository ?? throw new ArgumentNullException(nameof(elasticRepository));
+            _elasticSearch = elasticSearch ?? throw new ArgumentNullException(nameof(elasticSearch));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
@@ -53,8 +61,8 @@ namespace XieyiES.Api.Controllers
             }
             var entity = _mapper.Map<User>(addDto);
 
-            _logger.Debug($"to insert data : {JsonSerializer.Serialize(entity)}");
-            await _elasticClient.InsertAsync(entity);
+            _logger.Information($"to insert data : {JsonSerializer.Serialize(entity)}");
+            await _elasticRepository.InsertAsync(entity);
             return Ok(entity);
         }
 
@@ -77,8 +85,8 @@ namespace XieyiES.Api.Controllers
 
             var entities = _mapper.Map<List<User>>(addDtos);
 
-            _logger.Debug($"to insert lot of data : {JsonSerializer.Serialize(entities)}");
-            await _elasticClient.InsertRangeAsync(entities);
+            _logger.Information($"to insert lot of data : {JsonSerializer.Serialize(entities)}");
+            await _elasticRepository.InsertRangeAsync(entities);
             return Ok(entities);
         }
 
@@ -91,8 +99,8 @@ namespace XieyiES.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteIndexAsync()
         {
-            _logger.Debug("to delete userwallet index");
-            await _elasticClient.DeleteIndexAsync<User>();
+            _logger.Warning("to delete user index, all userInfo will be delete ");
+            await _elasticRepository.DeleteIndexAsync<User>();
             return NoContent();
         }
 
@@ -105,16 +113,15 @@ namespace XieyiES.Api.Controllers
         /// <response code="400">If the id is null</response> 
         /// <returns></returns>
         [HttpDelete("user/{id}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] string id, [FromQuery]string index)
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] string id, [FromQuery] string index)
         {
             if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest("id can't be null");
             }
-            _logger.Debug($"to delete doc Item [Id:{id}] ");
-            await _elasticClient.DeleteEntityByIdAsync<User>(id, index);
+            _logger.Information($"to delete doc Item [Id:{id}] ");
+            await _elasticRepository.DeleteEntityByIdAsync<User>(id, index);
             return NoContent();
         }
 
@@ -126,8 +133,7 @@ namespace XieyiES.Api.Controllers
         /// <response code="204">Delete Returns NoContent</response>
         /// <response code="400">If the ids is null</response> 
         /// <returns></returns>
-        [HttpDelete("users")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpDelete("users")] 
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUsersAsync([FromBody] IReadOnlyList<string> ids)
         {
@@ -137,8 +143,8 @@ namespace XieyiES.Api.Controllers
             }
 
             var deleteUsers = ids.Select(id => new User() { Id = id }).ToList();
-            _logger.Debug($"want to delete users -> userIds:{JsonSerializer.Serialize(ids)}");
-            await _elasticClient.DeleteManyAsync<User>(deleteUsers);
+            _logger.Information($"want to delete users -> userIds:{JsonSerializer.Serialize(ids)}");
+            await _elasticRepository.DeleteManyAsync<User>(deleteUsers);
             return NoContent();
         }
 
@@ -155,8 +161,8 @@ namespace XieyiES.Api.Controllers
         [HttpDelete("user/query")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUserByQueryAsync(
-            [FromQuery] string userName, [FromQuery] string userId, 
-            [FromQuery] QueryType queryType = QueryType.And, 
+            [FromQuery] string userName, [FromQuery] string userId,
+            [FromQuery] QueryType queryType = QueryType.And,
             [FromQuery] ConstraintType constraintType = ConstraintType.Tight)
         {
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(userId))
@@ -173,9 +179,9 @@ namespace XieyiES.Api.Controllers
                 expression = x => x.UserName.Contains(userName) || x.UserId.Contains(userId);
             if (queryType == QueryType.Or && constraintType == ConstraintType.Tight)
                 expression = x => x.UserName == userName || x.UserId == userId;
-            _logger.Debug(
+            _logger.Information(
                 $"use query to delete -> query:[userName:{userName},userId:{userId}] queryType:{queryType} constraintType:{constraintType}");
-            await _elasticClient.DeleteByQuery<User>(expression);
+            await _elasticRepository.DeleteByQuery<User>(expression);
             return NoContent();
         }
 
@@ -189,19 +195,136 @@ namespace XieyiES.Api.Controllers
         /// <response code="400">If the id is null</response> 
         [HttpPut("user/{id}")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(int), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateUserAsync([FromRoute]string id, [FromBody] UserUpdateOrAddDto updateDto)
+        public async Task<IActionResult> UpdateUserAsync([FromRoute] string id, [FromBody] UserUpdateOrAddDto updateDto)
         {
             if (id == null)
             {
-                return BadRequest("can't find this id");
+                return BadRequest("id can't be null");
             }
 
             var entity = _mapper.Map<User>(updateDto);
             _logger.Debug($"want to update user:[id:{id}] to: {JsonSerializer.Serialize(updateDto)}");
-            await _elasticClient.UpdateAsync(id, entity);
+            await _elasticRepository.UpdateAsync(id, entity);
             return Ok(entity);
+        }
+
+        /// <summary>
+        ///     查询用户信息
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">return users info</response>
+        /// <response code="404">users info is empty</response>
+        [HttpGet("users")]
+        [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var users = await _elasticSearch.Queryable<User>().OrderBy(x => x.Money).ToListAsync();
+            if (users == null || users.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(users);
+        }
+
+        /// <summary>
+        ///     分页查询用户信息
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        /// <response code="200">return users pageInfo</response>
+        /// <response code="404">users info is empty</response>
+        [HttpGet("users/page")]
+        [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetUsersPageAsync([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 5)
+        {
+            var users = await _elasticSearch.Queryable<User>().OrderBy(x => x.Money).ToPageListAsync(pageIndex, pageSize);
+            if (users == null || users.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(users);
+        }
+
+        /// <summary>
+        ///     分页查询用户信息 返回信息总数
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        /// <response code="200">return users pageInfo</response>
+        /// <response code="404">users info is empty</response>
+        [HttpGet("users/pageTotal")]
+        [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
+        public IActionResult GetUsersPageWithTotalNumber([FromQuery] int pageIndex = 1, [FromQuery] int pageSize = 5)
+        {
+            var data = _elasticSearch.Queryable<User>().ToPageList(pageIndex, pageSize, out var totalNumber);
+            if (data == null | data.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(new
+            {
+                data,
+                totalNumber
+            });
+        }
+
+        /// <summary>
+        ///     通过id查询用户
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <response code="200">return users contain this name</response>
+        /// <response code="404">users info is empty</response>
+        [HttpGet("user/{id}")]
+        [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SearchUserAsync([FromRoute] string id)
+        {
+            var data = await _elasticSearch.Queryable<User>().Where(x => x.Id == id).FirstAsync();
+            if (data == null )
+            {
+                return NotFound();
+            }
+            return Ok(data);
+        }
+
+        /// <summary>
+        ///     通过姓名模糊查询用户
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <returns></returns>
+        /// <response code="200">return users contain this name</response>
+        /// <response code="404">users info is empty</response>
+        [HttpGet("user/{userName}")]
+        [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SearchByQueryAsync([FromRoute] string userName)
+        {
+            var data = await _elasticSearch.Queryable<User>().Where(x=>x.UserName.Contains(userName)).ToListAsync();
+            if (data == null || data.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(data);
+        }
+
+        /// <summary>
+        ///     通过用户姓名分组
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">return users group</response>
+        /// <response code="404">users info is empty</response>
+        [HttpGet("user/group")]
+        [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GroupAsync()
+        {
+            var data = await _elasticSearch.Queryable<User>().GroupBy(x => x.UserName).ToListAsync();
+            if (data == null || data.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(data);
         }
     }
 }

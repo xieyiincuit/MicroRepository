@@ -5,7 +5,7 @@ namespace XieyiES.Api.Controllers.Base
     [ApiController]
     public class BaseController : ControllerBase
     {
-        protected virtual OkObjectResult Success()
+        protected virtual OkObjectResult Success(string message = "success")
         {
             return Ok(new
             {
@@ -13,7 +13,7 @@ namespace XieyiES.Api.Controllers.Base
             });
         }
 
-        protected virtual OkObjectResult Success<T>(T data, string message = "")
+        protected virtual OkObjectResult Success<T>(T data, string message = "success")
         {
             return Ok(new
             {

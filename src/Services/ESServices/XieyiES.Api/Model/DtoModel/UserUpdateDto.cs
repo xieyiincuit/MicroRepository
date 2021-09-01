@@ -1,17 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace XieyiES.Api.Model.DtoModel
 {
     public class UserUpdateOrAddDto
     {
-        [Required(ErrorMessage = "需填写UserId")]
+        [Required(ErrorMessage = "userId is required")]
         public string UserId { get; set; }
 
-        [Required(ErrorMessage = "需填写UserName")]
+        [Required(ErrorMessage = "userName is required")]
+        [StringLength(30, ErrorMessage = "userName lengths should in range[2-30]",MinimumLength = 2)]
         public string UserName { get; set; }
-
-        public DateTimeOffset CreateTime { get; set; }
 
         public decimal Money { get; set; }
     }

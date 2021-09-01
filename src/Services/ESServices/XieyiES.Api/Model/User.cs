@@ -9,7 +9,7 @@ namespace XieyiES.Api.Model
 
         public string UserName { get; set; }
 
-        public DateTimeOffset CreateTime { get; set; }
+        public DateTimeOffset CreateTime => DateTimeOffset.Now;
 
         public decimal Money { get; set; }
     }

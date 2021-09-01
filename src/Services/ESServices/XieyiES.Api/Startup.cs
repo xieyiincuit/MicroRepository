@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using XieyiES.Api.Extensions;
 using XieyiESLibrary;
 
 namespace XieyiES.Api
@@ -28,35 +29,32 @@ namespace XieyiES.Api
             {
                 c.SwaggerDoc("v1",
                     new OpenApiInfo
-                        {Title = "ElasticSearch Api", Version = "v1", Description = "Docs for elasticSearch"});
+                    { Title = "ElasticSearch Api", Version = "v1", Description = "Docs for elasticSearch" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
 
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddSingleton<ILogger>(Log.Logger);
             services.AddESServiceInDI(options =>
             {
                 options.Urls = Configuration["ElasticSearch:Uri"];
                 options.UserName = Configuration["ElasticSearch:UserName"];
                 options.Password = Configuration["ElasticSearch:Password"];
             });
-
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddSingleton<ILogger>(Log.Logger);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
             {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "XieyiElasticSearch v1");
-                    c.RoutePrefix = string.Empty;
-                });
-            }
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ElasticSearch v1");
+                c.RoutePrefix = string.Empty;
+            });
+
+            app.UseCustomExceptionHandler();
 
             app.UseHttpsRedirection();
 
