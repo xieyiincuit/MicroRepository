@@ -9,6 +9,16 @@
                 测试控制器
             </summary>
         </member>
+        <member name="F:XieyiES.Api.Controllers.UserController._elasticRepository">
+            <summary>
+                自定义仓储
+            </summary>
+        </member>
+        <member name="F:XieyiES.Api.Controllers.UserController._elasticSearch">
+            <summary>
+                自定义搜索
+            </summary>
+        </member>
         <member name="M:XieyiES.Api.Controllers.UserController.InsertUserAsync(XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto)">
             <summary>
                 新增一条数据
@@ -75,9 +85,78 @@
             <response code="200">Return newly Update Entity</response>
             <response code="400">If the id is null</response> 
         </member>
+        <member name="M:XieyiES.Api.Controllers.UserController.GetUsersAsync">
+            <summary>
+                查询用户信息
+            </summary>
+            <returns></returns>
+            <response code="200">return users info</response>
+            <response code="404">users info is empty</response>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserController.GetUsersPageAsync(System.Int32,System.Int32)">
+            <summary>
+                分页查询用户信息
+            </summary>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <returns></returns>
+            <response code="200">return users pageInfo</response>
+            <response code="404">users info is empty</response>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserController.GetUsersPageWithTotalNumber(System.Int32,System.Int32)">
+            <summary>
+                分页查询用户信息 返回信息总数
+            </summary>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <returns></returns>
+            <response code="200">return users pageInfo</response>
+            <response code="404">users info is empty</response>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserController.SearchUserAsync(System.String)">
+            <summary>
+                通过id查询用户
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+            <response code="200">return users contain this name</response>
+            <response code="404">users info is empty</response>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserController.SearchByQueryAsync(System.String)">
+            <summary>
+                通过姓名模糊查询用户
+            </summary>
+            <param name="userName"></param>
+            <returns></returns>
+            <response code="200">return users contain this name</response>
+            <response code="404">users info is empty</response>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserController.GroupAsync">
+            <summary>
+                通过用户姓名分组
+            </summary>
+            <returns></returns>
+            <response code="200">return users group</response>
+            <response code="404">users info is empty</response>
+        </member>
+        <member name="F:XieyiES.Api.Controllers.UserLoginController._elasticClient">
+            <summary>
+                NEST Client
+            </summary>
+        </member>
+        <member name="T:XieyiES.Api.Extensions.ExceptionHandlerMiddleware">
+            <summary>
+                自定义异常中间件
+            </summary>
+        </member>
+        <member name="T:XieyiES.Api.Extensions.ExceptionHandlerMiddlewareExtensions">
+            <summary>
+                异常处理中间件
+            </summary>
+        </member>
         <member name="T:XieyiES.Api.Extensions.MyLogEvents">
             <summary>
-                日志事件 ID
+                日志事件 ID 用于MicrosoftLogging
             </summary>
         </member>
     </members>
