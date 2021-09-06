@@ -144,6 +144,18 @@
                 NEST Client
             </summary>
         </member>
+        <member name="M:XieyiES.Api.Controllers.UserLoginController.InsertUserLoginInfo">
+            <summary>
+                新增测试数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfo">
+            <summary>
+                获取日期时间段内的记录 day 2
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:XieyiES.Api.Extensions.ExceptionHandlerMiddleware">
             <summary>
                 自定义异常中间件

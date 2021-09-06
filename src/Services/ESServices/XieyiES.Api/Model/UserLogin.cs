@@ -11,6 +11,6 @@ namespace XieyiES.Api.Model
         public long LoginInTime { get; set; }
         public long LoginOutTime { get; set; }
         public long OnLineTime { get; set; }
-        public DateTimeOffset CreateTime { get; set; }
+        public DateTime CreateTime { get; set; }
     }
 }
