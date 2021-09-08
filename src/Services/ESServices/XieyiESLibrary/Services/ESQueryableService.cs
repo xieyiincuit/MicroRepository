@@ -24,14 +24,14 @@ namespace XieyiESLibrary.Services
 
         public ESQueryableService(IElasticClient client, ILogger<ESSearchService> logger)
         {
-            _elasticClient = client;
-            _logger = logger;
-            _request = new SearchRequest(_mappingIndex.IndexName)
+            _queryBuilder = new QueryBuilder<T>();
+            _mappingIndex = _queryBuilder.GetMappingIndex();
+            _request = new SearchRequest(_mappingIndex.IndexName.ToLower())
             {
                 Size = 10000
             };
-            _queryBuilder = new QueryBuilder<T>();
-            _mappingIndex = _queryBuilder.GetMappingIndex();
+            _elasticClient = client;
+            _logger = logger;
         }
 
         public async Task<T> FirstAsync()
