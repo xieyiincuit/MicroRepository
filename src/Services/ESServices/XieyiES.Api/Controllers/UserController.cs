@@ -297,9 +297,9 @@ namespace XieyiES.Api.Controllers
         /// <returns></returns>
         /// <response code="200">return users contain this name</response>
         /// <response code="404">users info is empty</response>
-        [HttpGet("user/{userName}")]
+        [HttpGet("user/by")]
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SearchByQueryAsync([FromRoute] string userName)
+        public async Task<IActionResult> SearchByQueryAsync([FromQuery] string userName)
         {
             var data = await _elasticSearch.Queryable<User>().Where(x=>x.UserName.Contains(userName)).ToListAsync();
             if (data == null || data.Count == 0)
@@ -310,7 +310,7 @@ namespace XieyiES.Api.Controllers
         }
 
         /// <summary>
-        ///     通过用户姓名分组
+        ///     通过时间分组
         /// </summary>
         /// <returns></returns>
         /// <response code="200">return users group</response>
@@ -319,7 +319,7 @@ namespace XieyiES.Api.Controllers
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GroupAsync()
         {
-            var data = await _elasticSearch.Queryable<User>().GroupBy(x => x.UserName).ToListAsync();
+            var data = await _elasticSearch.Queryable<User>().GroupBy(x => x.CreateTime).ToListAsync();
             if (data == null || data.Count == 0)
             {
                 return NotFound();

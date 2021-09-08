@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +22,14 @@ namespace XieyiES.Api.Controllers
 
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
-        public UserLoginController(IESClientProvider elasticClient, ILogger logger, IMapper mapper)
+        private readonly IESSearch _elasticSearch;
+
+        public UserLoginController(IESClientProvider elasticClient, ILogger logger, IMapper mapper, IESSearch elasticSearch)
         {
             _elasticClient = elasticClient.ElasticClient ?? throw new ArgumentNullException(nameof(elasticClient.ElasticClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _elasticSearch = elasticSearch;
         }
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace XieyiES.Api.Controllers
             {
                 new UserLogin
                 {
-                    LoginId = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     NickName = "张三",
                     CreateTime = DateTime.Now,
                     College = "001",
@@ -50,7 +52,7 @@ namespace XieyiES.Api.Controllers
 
                 new UserLogin
                 {
-                    LoginId = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     NickName = "李四",
                     CreateTime = DateTime.Now,
                     College = "001",
@@ -59,7 +61,7 @@ namespace XieyiES.Api.Controllers
 
                 new UserLogin
                 {
-                    LoginId = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString(),
                     NickName = "王五",
                     CreateTime = DateTime.Now.AddDays(4),
                     College = "002",
@@ -135,6 +137,13 @@ namespace XieyiES.Api.Controllers
                 onlineTimeDic.Add(item.Key, childValue.Value);
             }
             return Ok(onlineTimeDic);
+        }
+
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetUserById(string name)
+        {
+            var loginRecord = await _elasticSearch.Queryable<UserLogin>().Where(x => x.NickName == name).FirstAsync();
+            return Ok(loginRecord);
         }
 
     }

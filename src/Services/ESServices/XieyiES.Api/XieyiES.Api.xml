@@ -133,7 +133,7 @@
         </member>
         <member name="M:XieyiES.Api.Controllers.UserController.GroupAsync">
             <summary>
-                通过用户姓名分组
+                通过时间分组
             </summary>
             <returns></returns>
             <response code="200">return users group</response>
@@ -152,7 +152,13 @@
         </member>
         <member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfo">
             <summary>
-                获取日期时间段内的记录 day 2
+                获取日期时间段内的记录
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfoGroupCollege">
+            <summary>
+                按学院分组 再聚合在线时间
             </summary>
             <returns></returns>
         </member>
