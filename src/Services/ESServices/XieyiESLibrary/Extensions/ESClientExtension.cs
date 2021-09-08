@@ -45,6 +45,18 @@ namespace XieyiESLibrary.Extensions
                 var response = await elasticClient.Indices.CreateAsync(indexName,
                     p => p.InitializeUsing(indexState).Map<T>(x => x.AutoMap()));
 
+                //可手动Map属性  设置keyword则只能被精准查询
+                //Func<CreateIndexDescriptor, ICreateIndexRequest> func = f => f.InitializeUsing(indexState)
+                //    .Map<CourseJoinRecord>(m =>
+                //        m.Properties(p => p
+                //            .Keyword(k => k.Name<string>(x => x.CourseId))
+                //            .Keyword(k => k.Name<string>(x => x.UserCode))
+                //            .Keyword(k => k.Name<string>(x => x.CourseCreateUserCode))
+                //            .Keyword(k => k.Name<string>(x => x.CourseType))
+                //            .Number(k => k.Name<long>(n => n.JoinTime).Type(NumberType.Long))
+                //            .Number(k => k.Name<long>(n => n.IsDelete).Type(NumberType.Long))
+                //        ));
+
                 if (!response.IsValid)
                     throw new Exception($"Create index:[{indexName}] failed! : {response.OriginalException.Message}");
             }
