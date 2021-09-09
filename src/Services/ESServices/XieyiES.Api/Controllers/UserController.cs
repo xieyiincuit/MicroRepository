@@ -297,7 +297,7 @@ namespace XieyiES.Api.Controllers
         /// <returns></returns>
         /// <response code="200">return users contain this name</response>
         /// <response code="404">users info is empty</response>
-        [HttpGet("user/by")]
+        [HttpGet("user/likesearch")]
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SearchByQueryAsync([FromQuery] string userName)
         {

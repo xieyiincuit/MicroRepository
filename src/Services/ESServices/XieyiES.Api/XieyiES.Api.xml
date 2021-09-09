@@ -4,6 +4,32 @@
         <name>XieyiES.Api</name>
     </assembly>
     <members>
+        <member name="M:XieyiES.Api.Controllers.CourseJoinController.InsertTestDataAsync">
+            <summary>
+                插入测试数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.CourseJoinController.DeleteIndexAsync">
+            <summary>
+                删除索引
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.CourseJoinController.GetCourseRecordGroupByUserAsync(System.String)">
+            <summary>
+                获取学生参加课程类别信息
+            </summary>
+            <param name="userCode"></param>
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.CourseJoinController.GetCourseLearningStatusByUserAsync(System.String)">
+            <summary>
+                获取学习学习进度信息
+            </summary>
+            <param name="userCode"></param>
+            <returns></returns>
+        </member>
         <member name="T:XieyiES.Api.Controllers.UserController">
             <summary>
                 测试控制器
@@ -146,8 +172,21 @@
         </member>
         <member name="M:XieyiES.Api.Controllers.UserLoginController.InsertUserLoginInfo">
             <summary>
-                新增测试数据
+                新建索引并新增测试数据
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserLoginController.DeleteIndex">
+            <summary>
+                删除userLogin索引
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfoById(System.String)">
+            <summary>
+                查询登录数据
+            </summary>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfo">
@@ -175,6 +214,36 @@
         <member name="T:XieyiES.Api.Extensions.MyLogEvents">
             <summary>
                 日志事件 ID 用于MicrosoftLogging
+            </summary>
+        </member>
+        <member name="P:XieyiES.Api.Model.CourseJoinRecord.Id">
+            <summary>
+            主键
+            </summary>
+        </member>
+        <member name="P:XieyiES.Api.Model.CourseJoinRecord.UserCode">
+            <summary>
+            用户编码
+            </summary>
+        </member>
+        <member name="P:XieyiES.Api.Model.CourseJoinRecord.CourseId">
+            <summary>
+            课程id
+            </summary>
+        </member>
+        <member name="P:XieyiES.Api.Model.CourseJoinRecord.ChapterId">
+            <summary>
+            章节id
+            </summary>
+        </member>
+        <member name="P:XieyiES.Api.Model.CourseJoinRecord.CourseType">
+            <summary>
+            加入课程的课程类别
+            </summary>
+        </member>
+        <member name="P:XieyiES.Api.Model.CourseJoinRecord.LearningStatus">
+            <summary>
+            学习状态
             </summary>
         </member>
     </members>

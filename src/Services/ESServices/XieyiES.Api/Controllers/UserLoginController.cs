@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nest;
 using Serilog;
 using XieyiES.Api.Model;
+using XieyiESLibrary.Extensions;
 using XieyiESLibrary.Interfaces;
 
 namespace XieyiES.Api.Controllers
@@ -22,18 +23,16 @@ namespace XieyiES.Api.Controllers
 
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
-        private readonly IESSearch _elasticSearch;
 
         public UserLoginController(IESClientProvider elasticClient, ILogger logger, IMapper mapper, IESSearch elasticSearch)
         {
             _elasticClient = elasticClient.ElasticClient ?? throw new ArgumentNullException(nameof(elasticClient.ElasticClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _elasticSearch = elasticSearch;
         }
 
         /// <summary>
-        ///     新增测试数据
+        ///     新建索引并新增测试数据
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -43,7 +42,7 @@ namespace XieyiES.Api.Controllers
             {
                 new UserLogin
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString("N"),
                     NickName = "张三",
                     CreateTime = DateTime.Now,
                     College = "001",
@@ -52,7 +51,7 @@ namespace XieyiES.Api.Controllers
 
                 new UserLogin
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString("N"),
                     NickName = "李四",
                     CreateTime = DateTime.Now,
                     College = "001",
@@ -61,7 +60,7 @@ namespace XieyiES.Api.Controllers
 
                 new UserLogin
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = Guid.NewGuid().ToString("N"),
                     NickName = "王五",
                     CreateTime = DateTime.Now.AddDays(4),
                     College = "002",
@@ -77,12 +76,57 @@ namespace XieyiES.Api.Controllers
             return Ok(loginRecords);
         }
 
+        /// <summary>
+        ///     删除userLogin索引
+        /// </summary>
+        /// <returns></returns>
+        [HttpDelete]
+        public async Task<IActionResult> DeleteIndex()
+        {
+            var result = await _elasticClient.Indices.DeleteAsync("userlogin");
+            if (result.IsValid)
+            {
+                return Ok("Delete Index Success");
+            }
+
+            return BadRequest();
+        }
+
+        /// <summary>
+        ///     查询登录数据
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public async Task<IActionResult> GetUserLoginInfoById([FromQuery] string id)
+        {
+            var indexName = string.Empty.GetIndex<UserLogin>();
+            if (id == null)
+            {
+                var records = await _elasticClient.SearchAsync<UserLogin>(x => x.Index(indexName));
+                return Ok(records.Documents);
+            }
+
+            //var record = await _elasticClient.SearchAsync<UserLogin>(x => x.Index(indexName).Query(q => q
+            //    .Bool(b => b.Must(m => m.Term(t => t.Field(f => f.Id).Value(id))))));
+
+            var record = await _elasticClient.SearchAsync<UserLogin>(x => x.Index(indexName)
+                .PostFilter(q => q
+                    .Bool(b => b.Must(m => m.Term(t => t.Field(f => f.Id).Value(id))))));
+
+            if (!record.IsValid)
+            {
+                return NotFound();
+            }
+
+            return Ok(record.Documents);
+        }
 
         /// <summary>
         ///     获取日期时间段内的记录
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("daterange")]
         public async Task<IActionResult> GetUserLoginInfo()
         {
             //var response = await _elasticClient.SearchAsync<UserLogin>(s=>s.Index("userlogin"));
@@ -92,7 +136,7 @@ namespace XieyiES.Api.Controllers
                         .GreaterThanOrEquals(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))
                         .LessThan(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(7).Day))))
                 .Aggregations(aggs => aggs.Terms("group_of_date", group => group.Field(x => x.CreateTime)
-                    .Aggregations(childAggs=> childAggs.Sum("sum_of_online", sum=>sum.Field(x=>x.OnLineTime)))))
+                    .Aggregations(childAggs => childAggs.Sum("sum_of_online", sum => sum.Field(x => x.OnLineTime)))))
                 .Index("userlogin"));
 
             if (response == null)
@@ -109,7 +153,6 @@ namespace XieyiES.Api.Controllers
             }
             return Ok(onlineTimeDic);
         }
-
 
         /// <summary>
         ///     按学院分组 再聚合在线时间
@@ -139,12 +182,6 @@ namespace XieyiES.Api.Controllers
             return Ok(onlineTimeDic);
         }
 
-        [HttpGet("{name}")]
-        public async Task<IActionResult> GetUserById(string name)
-        {
-            var loginRecord = await _elasticSearch.Queryable<UserLogin>().Where(x => x.NickName == name).FirstAsync();
-            return Ok(loginRecord);
-        }
 
     }
 }
