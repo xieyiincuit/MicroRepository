@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -13,7 +14,7 @@ using XieyiESLibrary.Interfaces;
 namespace XieyiES.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/student/record")]
+    [Route("api/v1/statistics")]
     public class UserLoginController : ControllerBase
     {
         /// <summary>
@@ -35,7 +36,7 @@ namespace XieyiES.Api.Controllers
         ///     新建索引并新增测试数据
         /// </summary>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("loginrecord")]
         public async Task<IActionResult> InsertUserLoginInfo()
         {
             var loginRecords = new List<UserLogin>
@@ -44,28 +45,67 @@ namespace XieyiES.Api.Controllers
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     NickName = "张三",
-                    CreateTime = DateTime.Now,
+                    CreateTime = DateTime.Now.AddDays(-7),
                     College = "001",
-                    OnLineTime = 123
+                    OnLineTime = 7
+                },
+                new UserLogin
+                {
+                    Id = Guid.NewGuid().ToString("N"),
+                    NickName = "张三2",
+                    CreateTime = DateTime.Now.AddDays(-6),
+                    College = "001",
+                    OnLineTime = 6
+                },
+                new UserLogin
+                {
+                    Id = Guid.NewGuid().ToString("N"),
+                    NickName = "张三3",
+                    CreateTime = DateTime.Now.AddDays(-5),
+                    College = "001",
+                    OnLineTime = 5
+                },
+                new UserLogin
+                {
+                    Id = Guid.NewGuid().ToString("N"),
+                    NickName = "张三4",
+                    CreateTime = DateTime.Now.AddDays(-4),
+                    College = "001",
+                    OnLineTime = 4
+                },
+                new UserLogin
+                {
+                    Id = Guid.NewGuid().ToString("N"),
+                    NickName = "张三5",
+                    CreateTime = DateTime.Now.AddDays(-3),
+                    College = "001",
+                    OnLineTime = 3
+                },
+                new UserLogin
+                {
+                    Id = Guid.NewGuid().ToString("N"),
+                    NickName = "张三6",
+                    CreateTime = DateTime.Now.AddDays(-2),
+                    College = "001",
+                    OnLineTime = 2
                 },
 
                 new UserLogin
                 {
                     Id = Guid.NewGuid().ToString("N"),
-                    NickName = "李四",
-                    CreateTime = DateTime.Now,
+                    NickName = "李四7",
+                    CreateTime = DateTime.Now.AddDays(-1),
                     College = "001",
-                    OnLineTime = 222
+                    OnLineTime = 1
                 },
-
                 new UserLogin
                 {
                     Id = Guid.NewGuid().ToString("N"),
-                    NickName = "王五",
-                    CreateTime = DateTime.Now.AddDays(4),
-                    College = "002",
-                    OnLineTime = 444
-                }
+                    NickName = "李四5",
+                    CreateTime = DateTime.Now,
+                    College = "001",
+                    OnLineTime = 1000
+                },
             };
 
             var response = await _elasticClient.IndexManyAsync(loginRecords, nameof(UserLogin).ToLower());
@@ -80,7 +120,7 @@ namespace XieyiES.Api.Controllers
         ///     删除userLogin索引
         /// </summary>
         /// <returns></returns>
-        [HttpDelete]
+        [HttpDelete("index")]
         public async Task<IActionResult> DeleteIndex()
         {
             var result = await _elasticClient.Indices.DeleteAsync("userlogin");
@@ -97,7 +137,7 @@ namespace XieyiES.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("loginrecord")]
         public async Task<IActionResult> GetUserLoginInfoById([FromQuery] string id)
         {
             var indexName = string.Empty.GetIndex<UserLogin>();
@@ -131,11 +171,11 @@ namespace XieyiES.Api.Controllers
         {
             //var response = await _elasticClient.SearchAsync<UserLogin>(s=>s.Index("userlogin"));
             var response = await _elasticClient.SearchAsync<UserLogin>(s => s.Query(q => q
-                    .DateRange(r => r
-                        .Field(f => f.CreateTime)
-                        .GreaterThanOrEquals(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day))
-                        .LessThan(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(7).Day))))
-                .Aggregations(aggs => aggs.Terms("group_of_date", group => group.Field(x => x.CreateTime)
+                    .Bool(b => b.Must(m => m.DateRange(r => r
+                           .Field(f => f.CreateTime)
+                           .GreaterThanOrEquals(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(-6).Day))
+                           .LessThan(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.AddDays(1).Day))))))
+                .Aggregations(aggs => aggs.DateHistogram("group_of_date", group => group.Field(x => x.CreateTime).CalendarInterval(DateInterval.Day)
                     .Aggregations(childAggs => childAggs.Sum("sum_of_online", sum => sum.Field(x => x.OnLineTime)))))
                 .Index("userlogin"));
 
@@ -144,12 +184,12 @@ namespace XieyiES.Api.Controllers
                 return NotFound();
             }
 
-            var aggsResult = response.Aggregations.Terms("group_of_date");
+            var aggsResult = response.Aggregations.DateHistogram("group_of_date");
             var onlineTimeDic = new Dictionary<string, double?>();
             foreach (var item in aggsResult.Buckets)
             {
                 var childValue = (ValueAggregate)item.Values.FirstOrDefault();
-                onlineTimeDic.Add(item.Key, childValue.Value);
+                onlineTimeDic.Add(item.Key.ToString(CultureInfo.InvariantCulture), childValue.Value);
             }
             return Ok(onlineTimeDic);
         }

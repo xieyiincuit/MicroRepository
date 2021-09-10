@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualBasic;
 using Nest;
 using XieyiES.Api.Model;
 using XieyiESLibrary.Interfaces;
@@ -11,7 +10,7 @@ using XieyiESLibrary.Interfaces;
 namespace XieyiES.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/courseinfo")]
+    [Route("api/v1/statistics")]
     public class CourseJoinController : ControllerBase
     {
         private readonly IESRepository _esRepository;

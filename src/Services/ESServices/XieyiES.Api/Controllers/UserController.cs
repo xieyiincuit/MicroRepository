@@ -20,7 +20,7 @@ namespace XieyiES.Api.Controllers
     ///     测试控制器
     /// </summary>
     [ApiController]
-    [Route("api/v1/xieyi")]
+    [Route("api/test")]
     public class UserController : ControllerBase
     {
         /// <summary>
