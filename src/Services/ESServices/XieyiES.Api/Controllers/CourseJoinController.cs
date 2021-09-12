@@ -13,8 +13,8 @@ namespace XieyiES.Api.Controllers
     [Route("api/v1/statistics/coursejoin")]
     public class CourseJoinController : ControllerBase
     {
-        private readonly IESRepository _esRepository;
         private readonly IElasticClient _elasticClient;
+        private readonly IESRepository _esRepository;
 
         public CourseJoinController(IESRepository esRepository, IESClientProvider esClientProvider)
         {
@@ -29,9 +29,9 @@ namespace XieyiES.Api.Controllers
         [HttpPost("testdata")]
         public async Task<IActionResult> InsertTestDataAsync()
         {
-            var courseRecords = new List<CourseJoinRecord>()
+            var courseRecords = new List<CourseJoinRecord>
             {
-                new CourseJoinRecord
+                new()
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     CourseId = "001",
@@ -40,33 +40,33 @@ namespace XieyiES.Api.Controllers
                     CourseType = "1",
                     LearningStatus = 2
                 },
-                new CourseJoinRecord
+                new()
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     CourseId = "001",
                     ChapterId = "001-chapter2",
                     UserCode = "xieyi",
                     CourseType = "1",
-                    LearningStatus = 1,
+                    LearningStatus = 1
                 },
-                new CourseJoinRecord
+                new()
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     CourseId = "002",
                     ChapterId = "002-chapter1",
                     UserCode = "xieyi",
                     CourseType = "2",
-                    LearningStatus = 2,
+                    LearningStatus = 2
                 },
-                new CourseJoinRecord
+                new()
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     CourseId = "003",
                     UserCode = "xieyi",
                     CourseType = "2",
-                    LearningStatus = 2,
+                    LearningStatus = 2
                 },
-                new CourseJoinRecord
+                new()
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     CourseId = "006",
@@ -74,7 +74,7 @@ namespace XieyiES.Api.Controllers
                     CourseType = "1",
                     LearningStatus = 1
                 },
-                new CourseJoinRecord
+                new()
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     CourseId = "007",
@@ -82,7 +82,7 @@ namespace XieyiES.Api.Controllers
                     CourseType = "1",
                     LearningStatus = 2
                 },
-                new CourseJoinRecord
+                new()
                 {
                     Id = Guid.NewGuid().ToString("N"),
                     CourseId = "008",
@@ -93,13 +93,9 @@ namespace XieyiES.Api.Controllers
             };
             var response = await _esRepository.InsertRangeAsync(courseRecords, "coursejoinrecord");
 
-            if (!response)
-            {
-                return BadRequest();
-            }
+            if (!response) return BadRequest();
 
             return Ok(courseRecords);
-
         }
 
         /// <summary>
@@ -110,10 +106,7 @@ namespace XieyiES.Api.Controllers
         public async Task<IActionResult> DeleteIndexAsync()
         {
             var exist = await _esRepository.IndexExistsAsync(nameof(CourseJoinRecord).ToLower());
-            if (!exist)
-            {
-                return BadRequest("index don't exist in node");
-            }
+            if (!exist) return BadRequest("index don't exist in node");
 
             await _esRepository.DeleteIndexAsync<CourseJoinRecord>();
             return Ok("index has been deleted");
@@ -139,29 +132,26 @@ namespace XieyiES.Api.Controllers
                 var courseJoinRecord = await _elasticClient.SearchAsync<CourseJoinRecord>(s => s.Index(indexName)
                     .Query(q => q
                         .Bool(b => b.Must(m => m.Term(t => t.Field(f => f.UserCode).Value(userCode)))))
-                .Aggregations(aggs => aggs.Terms("group_by_coursetype", t => t.Field(f => f.CourseType.Suffix("keyword"))
-                        .Aggregations(childAggs => childAggs.Cardinality("distinct_by_courseid", card => card.Field(x => x.CourseId.Suffix("keyword")))))));
+                    .Aggregations(aggs => aggs.Terms("group_by_coursetype", t => t
+                        .Field(f => f.CourseType.Suffix("keyword"))
+                        .Aggregations(childAggs => childAggs.Cardinality("distinct_by_courseid",
+                            card => card.Field(x => x.CourseId.Suffix("keyword")))))));
 
                 var aggsResult = courseJoinRecord.Aggregations.Terms("group_by_coursetype");
                 var courseJoinDic = new Dictionary<string, double?>();
                 foreach (var item in aggsResult.Buckets)
                 {
-                    if (courseTypeDic.ContainsKey(item.Key))
-                    {
-                        item.Key = courseTypeDic[item.Key];
-                    }
+                    if (courseTypeDic.ContainsKey(item.Key)) item.Key = courseTypeDic[item.Key];
                     var childValue = (ValueAggregate)item.Values.FirstOrDefault();
                     courseJoinDic.Add(item.Key, childValue.Value);
                 }
+
                 return Ok(courseJoinDic);
             }
 
             var courseJoinRecords = await _elasticClient.SearchAsync<CourseJoinRecord>(s => s.Index(indexName));
 
-            if (!courseJoinRecords.IsValid)
-            {
-                return NotFound();
-            }
+            if (!courseJoinRecords.IsValid) return NotFound();
             return Ok(courseJoinRecords.Documents);
         }
 
@@ -195,15 +185,13 @@ namespace XieyiES.Api.Controllers
 
                 foreach (var idGroup in recordGroupByCourseId)
                 {
-                    if (idGroup.Any(x=>x.LearningStatus == 1))
+                    if (idGroup.Any(x => x.LearningStatus == 1))
                     {
                         learningSituationDic["学习中"]++;
                         continue;
                     }
-                    if (idGroup.Any(x => x.LearningStatus == 2))
-                    {
-                        learningSituationDic["已完成"]++;
-                    }
+
+                    if (idGroup.Any(x => x.LearningStatus == 2)) learningSituationDic["已完成"]++;
                 }
 
                 return Ok(learningSituationDic);
@@ -211,12 +199,8 @@ namespace XieyiES.Api.Controllers
 
             var courseJoinRecords = await _elasticClient.SearchAsync<CourseJoinRecord>(s => s.Index(indexName));
 
-            if (!courseJoinRecords.IsValid)
-            {
-                return NotFound();
-            }
+            if (!courseJoinRecords.IsValid) return NotFound();
             return Ok(courseJoinRecords.Documents);
         }
-
     }
 }

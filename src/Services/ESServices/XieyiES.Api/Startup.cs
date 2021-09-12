@@ -28,7 +28,7 @@ namespace XieyiES.Api
             {
                 c.SwaggerDoc("v1",
                     new OpenApiInfo
-                    { Title = "ElasticSearch Api", Version = "v1", Description = "Docs for elasticSearch" });
+                        { Title = "ElasticSearch Api", Version = "v1", Description = "Docs for elasticSearch" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);

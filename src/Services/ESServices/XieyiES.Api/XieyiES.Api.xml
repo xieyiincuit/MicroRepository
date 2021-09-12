@@ -1,242 +1,248 @@
 <?xml version="1.0"?>
+
 <doc>
-    <assembly>
-        <name>XieyiES.Api</name>
-    </assembly>
-    <members>
-        <member name="M:XieyiES.Api.Controllers.CourseJoinController.InsertTestDataAsync">
-            <summary>
-                插入测试数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.CourseJoinController.DeleteIndexAsync">
-            <summary>
-                删除索引
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.CourseJoinController.GetCourseRecordGroupByUserAsync(System.String)">
-            <summary>
-                获取学生参加课程类别信息
-            </summary>
-            <param name="userCode"></param>
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.CourseJoinController.GetCourseLearningStatusByUserAsync(System.String)">
-            <summary>
-                获取学习学习进度信息
-            </summary>
-            <param name="userCode"></param>
-            <returns></returns>
-        </member>
-        <member name="T:XieyiES.Api.Controllers.UserController">
-            <summary>
-                测试控制器
-            </summary>
-        </member>
-        <member name="F:XieyiES.Api.Controllers.UserController._elasticRepository">
-            <summary>
-                自定义仓储
-            </summary>
-        </member>
-        <member name="F:XieyiES.Api.Controllers.UserController._elasticSearch">
-            <summary>
-                自定义搜索
-            </summary>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.InsertUserAsync(XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto)">
-            <summary>
-                新增一条数据
-            </summary>
-            <param name="addDto"></param>
-            <returns></returns>
-            <response code="200">Returns the newly created item</response>
-            <response code="400">If the item is null</response>    
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.InsertUsersAsync(System.Collections.Generic.List{XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto})">
-            <summary>
-                批量新增多条数据
-            </summary>
-            <param name="addDtos"></param>
-            <returns></returns>
-            <response code="200">Returns the newly created itemList</response>
-            <response code="400">If the item is null</response>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.DeleteIndexAsync">
-            <summary>
-                删除user索引
-            </summary>
-            <returns></returns>
-            <response code="204">delete return NoContent</response>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.DeleteUserAsync(System.String,System.String)">
-            <summary>
-                根据Id删除索引中的文件
-            </summary>
-            <param name="id"></param>
-            <param name="index"></param>
-            <response code="204">Delete Returns NoContent</response>
-            <response code="400">If the id is null</response> 
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.DeleteUsersAsync(System.Collections.Generic.IReadOnlyList{System.String})">
-            <summary>
-                通过数据唯一标识批量删除数据
-            </summary>
-            <param name="ids"></param>
-            <response code="204">Delete Returns NoContent</response>
-            <response code="400">If the ids is null</response> 
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.DeleteUserByQueryAsync(System.String,System.String,XieyiESLibrary.Entity.QueryType,XieyiESLibrary.Entity.ConstraintType)">
-            <summary>
-                根据检索条件删除
-            </summary>
-            <param name="userName"></param>
-            <param name="userId"></param>
-            <param name="queryType">0-And 1-Or</param>
-            <param name="constraintType">0-Loose 1-Tight</param>
-            <response code="400">if query item is null</response>
-            <response code="204">Delete Return NoContent</response>
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.UpdateUserAsync(System.String,XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto)">
-            <summary>
-                通过id更新实体信息
-            </summary>
-            <param name="id"></param>
-            <param name="updateDto"></param>
-            <returns></returns>
-            <response code="200">Return newly Update Entity</response>
-            <response code="400">If the id is null</response> 
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.GetUsersAsync">
-            <summary>
-                查询用户信息
-            </summary>
-            <returns></returns>
-            <response code="200">return users info</response>
-            <response code="404">users info is empty</response>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.GetUsersPageAsync(System.Int32,System.Int32)">
-            <summary>
-                分页查询用户信息
-            </summary>
-            <param name="pageIndex"></param>
-            <param name="pageSize"></param>
-            <returns></returns>
-            <response code="200">return users pageInfo</response>
-            <response code="404">users info is empty</response>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.GetUsersPageWithTotalNumber(System.Int32,System.Int32)">
-            <summary>
-                分页查询用户信息 返回信息总数
-            </summary>
-            <param name="pageIndex"></param>
-            <param name="pageSize"></param>
-            <returns></returns>
-            <response code="200">return users pageInfo</response>
-            <response code="404">users info is empty</response>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.SearchUserAsync(System.String)">
-            <summary>
-                通过id查询用户
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-            <response code="200">return users contain this name</response>
-            <response code="404">users info is empty</response>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.SearchByQueryAsync(System.String)">
-            <summary>
-                通过姓名模糊查询用户
-            </summary>
-            <param name="userName"></param>
-            <returns></returns>
-            <response code="200">return users contain this name</response>
-            <response code="404">users info is empty</response>
-        </member>
-        <member name="F:XieyiES.Api.Controllers.UserLoginController._elasticClient">
-            <summary>
-                NEST Client
-            </summary>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserLoginController.InsertUserLoginInfo">
-            <summary>
-                新建索引并新增测试数据
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserLoginController.DeleteIndex">
-            <summary>
-                删除userLogin索引
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfoById(System.String)">
-            <summary>
-                查询登录数据
-            </summary>
-            <param name="id"></param>
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfo">
-            <summary>
-                获取日期时间段内的记录
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfoGroupCollege">
-            <summary>
-                按学院分组 再聚合在线时间
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="T:XieyiES.Api.Extensions.ExceptionHandlerMiddleware">
-            <summary>
-                自定义异常中间件
-            </summary>
-        </member>
-        <member name="T:XieyiES.Api.Extensions.ExceptionHandlerMiddlewareExtensions">
-            <summary>
-                异常处理中间件
-            </summary>
-        </member>
-        <member name="T:XieyiES.Api.Extensions.MyLogEvents">
-            <summary>
-                日志事件 ID 用于MicrosoftLogging
-            </summary>
-        </member>
-        <member name="P:XieyiES.Api.Model.CourseJoinRecord.Id">
-            <summary>
-            主键
-            </summary>
-        </member>
-        <member name="P:XieyiES.Api.Model.CourseJoinRecord.UserCode">
-            <summary>
-            用户编码
-            </summary>
-        </member>
-        <member name="P:XieyiES.Api.Model.CourseJoinRecord.CourseId">
-            <summary>
-            课程id
-            </summary>
-        </member>
-        <member name="P:XieyiES.Api.Model.CourseJoinRecord.ChapterId">
-            <summary>
-            章节id
-            </summary>
-        </member>
-        <member name="P:XieyiES.Api.Model.CourseJoinRecord.CourseType">
-            <summary>
-            加入课程的课程类别
-            </summary>
-        </member>
-        <member name="P:XieyiES.Api.Model.CourseJoinRecord.LearningStatus">
-            <summary>
-            学习状态
-            </summary>
-        </member>
-    </members>
+	<assembly>
+		<name>XieyiES.Api</name>
+	</assembly>
+	<members>
+		<member name="M:XieyiES.Api.Controllers.CourseJoinController.InsertTestDataAsync">
+			<summary>
+				插入测试数据
+			</summary>
+			<returns></returns>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.CourseJoinController.DeleteIndexAsync">
+			<summary>
+				删除索引
+			</summary>
+			<returns></returns>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.CourseJoinController.GetCourseRecordGroupByUserAsync(System.String)">
+			<summary>
+				获取学生参加课程类别信息
+			</summary>
+			<param name="userCode"></param>
+			<returns></returns>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.CourseJoinController.GetCourseLearningStatusByUserAsync(System.String)">
+			<summary>
+				获取学习学习进度信息
+			</summary>
+			<param name="userCode"></param>
+			<returns></returns>
+		</member>
+		<member name="T:XieyiES.Api.Controllers.UserController">
+			<summary>
+				测试控制器
+			</summary>
+		</member>
+		<member name="F:XieyiES.Api.Controllers.UserController._elasticRepository">
+			<summary>
+				自定义仓储
+			</summary>
+		</member>
+		<member name="F:XieyiES.Api.Controllers.UserController._elasticSearch">
+			<summary>
+				自定义搜索
+			</summary>
+		</member>
+		<member
+			name="M:XieyiES.Api.Controllers.UserController.InsertUserAsync(XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto)">
+			<summary>
+				新增一条数据
+			</summary>
+			<param name="addDto"></param>
+			<returns></returns>
+			<response code="200">Returns the newly created item</response>
+			<response code="400">If the item is null</response>
+		</member>
+		<member
+			name="M:XieyiES.Api.Controllers.UserController.InsertUsersAsync(System.Collections.Generic.List{XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto})">
+			<summary>
+				批量新增多条数据
+			</summary>
+			<param name="addDtos"></param>
+			<returns></returns>
+			<response code="200">Returns the newly created itemList</response>
+			<response code="400">If the item is null</response>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserController.DeleteIndexAsync">
+			<summary>
+				删除user索引
+			</summary>
+			<returns></returns>
+			<response code="204">delete return NoContent</response>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserController.DeleteUserAsync(System.String,System.String)">
+			<summary>
+				根据Id删除索引中的文件
+			</summary>
+			<param name="id"></param>
+			<param name="index"></param>
+			<response code="204">Delete Returns NoContent</response>
+			<response code="400">If the id is null</response>
+			<returns></returns>
+		</member>
+		<member
+			name="M:XieyiES.Api.Controllers.UserController.DeleteUsersAsync(System.Collections.Generic.IReadOnlyList{System.String})">
+			<summary>
+				通过数据唯一标识批量删除数据
+			</summary>
+			<param name="ids"></param>
+			<response code="204">Delete Returns NoContent</response>
+			<response code="400">If the ids is null</response>
+			<returns></returns>
+		</member>
+		<member
+			name="M:XieyiES.Api.Controllers.UserController.DeleteUserByQueryAsync(System.String,System.String,XieyiESLibrary.Entity.QueryType,XieyiESLibrary.Entity.ConstraintType)">
+			<summary>
+				根据检索条件删除
+			</summary>
+			<param name="userName"></param>
+			<param name="userId"></param>
+			<param name="queryType">0-And 1-Or</param>
+			<param name="constraintType">0-Loose 1-Tight</param>
+			<response code="400">if query item is null</response>
+			<response code="204">Delete Return NoContent</response>
+			<returns></returns>
+		</member>
+		<member
+			name="M:XieyiES.Api.Controllers.UserController.UpdateUserAsync(System.String,XieyiES.Api.Model.DtoModel.UserUpdateOrAddDto)">
+			<summary>
+				通过id更新实体信息
+			</summary>
+			<param name="id"></param>
+			<param name="updateDto"></param>
+			<returns></returns>
+			<response code="200">Return newly Update Entity</response>
+			<response code="400">If the id is null</response>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserController.GetUsersAsync">
+			<summary>
+				查询用户信息
+			</summary>
+			<returns></returns>
+			<response code="200">return users info</response>
+			<response code="404">users info is empty</response>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserController.GetUsersPageAsync(System.Int32,System.Int32)">
+			<summary>
+				分页查询用户信息
+			</summary>
+			<param name="pageIndex"></param>
+			<param name="pageSize"></param>
+			<returns></returns>
+			<response code="200">return users pageInfo</response>
+			<response code="404">users info is empty</response>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserController.GetUsersPageWithTotalNumber(System.Int32,System.Int32)">
+			<summary>
+				分页查询用户信息 返回信息总数
+			</summary>
+			<param name="pageIndex"></param>
+			<param name="pageSize"></param>
+			<returns></returns>
+			<response code="200">return users pageInfo</response>
+			<response code="404">users info is empty</response>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserController.SearchUserAsync(System.String)">
+			<summary>
+				通过id查询用户
+			</summary>
+			<param name="id"></param>
+			<returns></returns>
+			<response code="200">return users contain this name</response>
+			<response code="404">users info is empty</response>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserController.SearchByQueryAsync(System.String)">
+			<summary>
+				通过姓名模糊查询用户
+			</summary>
+			<param name="userName"></param>
+			<returns></returns>
+			<response code="200">return users contain this name</response>
+			<response code="404">users info is empty</response>
+		</member>
+		<member name="F:XieyiES.Api.Controllers.UserLoginController._elasticClient">
+			<summary>
+				NEST Client
+			</summary>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserLoginController.InsertUserLoginInfo">
+			<summary>
+				新建索引并新增测试数据
+			</summary>
+			<returns></returns>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserLoginController.DeleteIndex">
+			<summary>
+				删除userLogin索引
+			</summary>
+			<returns></returns>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfoById(System.String)">
+			<summary>
+				查询登录数据
+			</summary>
+			<param name="id"></param>
+			<returns></returns>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfo">
+			<summary>
+				获取日期时间段内的记录
+			</summary>
+			<returns></returns>
+		</member>
+		<member name="M:XieyiES.Api.Controllers.UserLoginController.GetUserLoginInfoGroupCollege">
+			<summary>
+				按学院分组 再聚合在线时间
+			</summary>
+			<returns></returns>
+		</member>
+		<member name="T:XieyiES.Api.Extensions.ExceptionHandlerMiddleware">
+			<summary>
+				自定义异常中间件
+			</summary>
+		</member>
+		<member name="T:XieyiES.Api.Extensions.ExceptionHandlerMiddlewareExtensions">
+			<summary>
+				异常处理中间件
+			</summary>
+		</member>
+		<member name="T:XieyiES.Api.Extensions.MyLogEvents">
+			<summary>
+				日志事件 ID 用于MicrosoftLogging
+			</summary>
+		</member>
+		<member name="P:XieyiES.Api.Model.CourseJoinRecord.Id">
+			<summary>
+				主键
+			</summary>
+		</member>
+		<member name="P:XieyiES.Api.Model.CourseJoinRecord.UserCode">
+			<summary>
+				用户编码
+			</summary>
+		</member>
+		<member name="P:XieyiES.Api.Model.CourseJoinRecord.CourseId">
+			<summary>
+				课程id
+			</summary>
+		</member>
+		<member name="P:XieyiES.Api.Model.CourseJoinRecord.ChapterId">
+			<summary>
+				章节id
+			</summary>
+		</member>
+		<member name="P:XieyiES.Api.Model.CourseJoinRecord.CourseType">
+			<summary>
+				加入课程的课程类别
+			</summary>
+		</member>
+		<member name="P:XieyiES.Api.Model.CourseJoinRecord.LearningStatus">
+			<summary>
+				学习状态
+			</summary>
+		</member>
+	</members>
 </doc>

@@ -22,6 +22,7 @@ namespace XieyiES.Api.Controllers.Base
                 Data = data
             });
         }
+
         protected virtual BadRequestObjectResult FailWithBadRequest(string message = "request fail")
         {
             return BadRequest(new
@@ -57,6 +58,5 @@ namespace XieyiES.Api.Controllers.Base
                 Data = data
             });
         }
-
     }
 }

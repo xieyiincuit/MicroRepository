@@ -11,8 +11,8 @@ namespace XieyiES.Api.Extensions
     /// </summary>
     public class ExceptionHandlerMiddleware
     {
-        private readonly RequestDelegate _next;
         private readonly ILogger _logger;
+        private readonly RequestDelegate _next;
 
         public ExceptionHandlerMiddleware(RequestDelegate next, ILogger logger)
         {
@@ -28,13 +28,13 @@ namespace XieyiES.Api.Extensions
             }
             catch (Exception ex)
             {
-                var result = new ErrorResult()
+                var result = new ErrorResult
                 {
                     ErrorCode = StatusCodes.Status500InternalServerError,
                     ErrorMessage = ex.Message,
                     ErrorStack = ex.StackTrace
                 };
-                _logger.Error($"exceptionHandlerMiddleware catch a error, please fix it");
+                _logger.Error("exceptionHandlerMiddleware catch a error, please fix it");
                 context.Response.ContentType = "application/json;charset=utf-8";
                 await context.Response.WriteAsync(JsonConvert.SerializeObject(result));
             }

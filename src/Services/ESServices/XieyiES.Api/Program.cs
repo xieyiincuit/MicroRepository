@@ -47,10 +47,9 @@ namespace XieyiES.Api
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", false, true)
                 .AddEnvironmentVariables();
             return builder.Build();
         }
     }
-
 }

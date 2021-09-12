@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-
 namespace XieyiES.Api.Extensions
 {
     /// <summary>
