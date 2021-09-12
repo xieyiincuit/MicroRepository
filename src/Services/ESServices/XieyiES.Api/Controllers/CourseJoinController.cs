@@ -10,7 +10,7 @@ using XieyiESLibrary.Interfaces;
 namespace XieyiES.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/statistics")]
+    [Route("api/v1/statistics/coursejoin")]
     public class CourseJoinController : ControllerBase
     {
         private readonly IESRepository _esRepository;

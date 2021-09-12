@@ -119,12 +119,6 @@ namespace XieyiESLibrary.Services
             return this;
         }
 
-        public IESQueryable<T> GroupBy(Expression<Func<T, object>> expression)
-        {
-            _GroupBy(expression);
-            return this;
-        }
-
         private List<TResult> _ToList<TResult>() where TResult : class
         {
             var response = _elasticClient.Search<TResult>(_request);
@@ -145,17 +139,6 @@ namespace XieyiESLibrary.Services
 
             _totalNumber = response.Total;
             return response.Documents.ToList();
-        }
-
-        private void _GroupBy(Expression expression)
-        {
-            var propertyName = ReflectionExtensionHelper.GetProperty(expression as LambdaExpression).Name;
-            propertyName = _mappingIndex.Columns.FirstOrDefault(x => x.PropertyName == propertyName)?.SearchName ?? propertyName;
-            _request.Aggregations = new TermsAggregation(propertyName)
-            {
-                Field = propertyName,
-                Size = 1000
-            };
         }
 
         private void _OrderBy(Expression expression, OrderByType type = OrderByType.Asc)

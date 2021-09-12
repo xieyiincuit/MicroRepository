@@ -61,12 +61,5 @@ namespace XieyiESLibrary.Interfaces
         /// <param name="type">默认升序</param>
         /// <returns></returns>
         IESQueryable<T> OrderBy(Expression<Func<T, object>> expression, OrderByType type = OrderByType.Asc);
-
-        /// <summary>
-        ///     分组
-        /// </summary>
-        /// <param name="expression"></param>
-        /// <returns></returns>
-        IESQueryable<T> GroupBy(Expression<Func<T, object>> expression);
     }
 }

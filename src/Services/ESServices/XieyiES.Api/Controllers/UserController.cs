@@ -133,7 +133,7 @@ namespace XieyiES.Api.Controllers
         /// <response code="204">Delete Returns NoContent</response>
         /// <response code="400">If the ids is null</response> 
         /// <returns></returns>
-        [HttpDelete("users")] 
+        [HttpDelete("users")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         public async Task<IActionResult> DeleteUsersAsync([FromBody] IReadOnlyList<string> ids)
         {
@@ -283,7 +283,7 @@ namespace XieyiES.Api.Controllers
         public async Task<IActionResult> SearchUserAsync([FromRoute] string id)
         {
             var data = await _elasticSearch.Queryable<User>().Where(x => x.Id == id).FirstAsync();
-            if (data == null )
+            if (data == null)
             {
                 return NotFound();
             }
@@ -301,7 +301,7 @@ namespace XieyiES.Api.Controllers
         [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
         public async Task<IActionResult> SearchByQueryAsync([FromQuery] string userName)
         {
-            var data = await _elasticSearch.Queryable<User>().Where(x=>x.UserName.Contains(userName)).ToListAsync();
+            var data = await _elasticSearch.Queryable<User>().Where(x => x.UserName.Contains(userName)).ToListAsync();
             if (data == null || data.Count == 0)
             {
                 return NotFound();
@@ -309,22 +309,5 @@ namespace XieyiES.Api.Controllers
             return Ok(data);
         }
 
-        /// <summary>
-        ///     通过时间分组
-        /// </summary>
-        /// <returns></returns>
-        /// <response code="200">return users group</response>
-        /// <response code="404">users info is empty</response>
-        [HttpGet("user/group")]
-        [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GroupAsync()
-        {
-            var data = await _elasticSearch.Queryable<User>().GroupBy(x => x.CreateTime).ToListAsync();
-            if (data == null || data.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(data);
-        }
     }
 }

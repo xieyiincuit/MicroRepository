@@ -157,14 +157,6 @@
             <response code="200">return users contain this name</response>
             <response code="404">users info is empty</response>
         </member>
-        <member name="M:XieyiES.Api.Controllers.UserController.GroupAsync">
-            <summary>
-                通过时间分组
-            </summary>
-            <returns></returns>
-            <response code="200">return users group</response>
-            <response code="404">users info is empty</response>
-        </member>
         <member name="F:XieyiES.Api.Controllers.UserLoginController._elasticClient">
             <summary>
                 NEST Client

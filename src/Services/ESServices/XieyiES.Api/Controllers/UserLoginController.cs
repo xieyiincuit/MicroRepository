@@ -14,7 +14,7 @@ using XieyiESLibrary.Interfaces;
 namespace XieyiES.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/statistics")]
+    [Route("api/v1/statistics/loginrecord")]
     public class UserLoginController : ControllerBase
     {
         /// <summary>
@@ -36,7 +36,7 @@ namespace XieyiES.Api.Controllers
         ///     新建索引并新增测试数据
         /// </summary>
         /// <returns></returns>
-        [HttpPost("loginrecord")]
+        [HttpPost("testdata")]
         public async Task<IActionResult> InsertUserLoginInfo()
         {
             var loginRecords = new List<UserLogin>
@@ -137,7 +137,7 @@ namespace XieyiES.Api.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("loginrecord")]
+        [HttpGet]
         public async Task<IActionResult> GetUserLoginInfoById([FromQuery] string id)
         {
             var indexName = string.Empty.GetIndex<UserLogin>();
@@ -169,7 +169,6 @@ namespace XieyiES.Api.Controllers
         [HttpGet("daterange")]
         public async Task<IActionResult> GetUserLoginInfo()
         {
-            //var response = await _elasticClient.SearchAsync<UserLogin>(s=>s.Index("userlogin"));
             var response = await _elasticClient.SearchAsync<UserLogin>(s => s.Query(q => q
                     .Bool(b => b.Must(m => m.DateRange(r => r
                            .Field(f => f.CreateTime)

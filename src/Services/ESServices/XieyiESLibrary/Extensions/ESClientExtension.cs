@@ -12,12 +12,12 @@ namespace XieyiESLibrary.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="elasticClient"></param>
         /// <param name="indexName"></param>
-        /// <param name="numberOfShards">副本数量 默认为5</param>
-        /// <param name="numberOfReplicas">分片 默认为1</param>
+        /// <param name="numberOfShards">副本数量 默认为2</param>
+        /// <param name="numberOfReplicas">分片 默认为2</param>
         /// <returns></returns>
         public static async Task CreateIndexAsync<T>(
             this ElasticClient elasticClient, string indexName = "",
-            int numberOfShards = 5, int numberOfReplicas = 1) where T : class
+            int numberOfShards = 2, int numberOfReplicas = 2) where T : class
         {
             if (string.IsNullOrWhiteSpace(indexName))
                 throw new ArgumentException("indexName require a value, can't be empty.");
@@ -41,11 +41,11 @@ namespace XieyiESLibrary.Extensions
                     }
                 };
 
-                //Map一个空Document
+                //Map一个Document 可以通过Properties Map
                 var response = await elasticClient.Indices.CreateAsync(indexName,
                     p => p.InitializeUsing(indexState).Map<T>(x => x.AutoMap()));
 
-                //可手动Map属性  设置keyword则只能被精准查询
+                //可手动Map属性
                 //Func<CreateIndexDescriptor, ICreateIndexRequest> func = f => f.InitializeUsing(indexState)
                 //    .Map<CourseJoinRecord>(m =>
                 //        m.Properties(p => p
