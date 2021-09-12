@@ -13,13 +13,13 @@ using XieyiESLibrary.Interfaces;
 
 namespace XieyiESLibrary.Services
 {
-    public class ESQueryableService<T> : IESQueryable<T> where T :class
+    public class ESQueryableService<T> : IESQueryable<T> where T : class
     {
         private readonly IElasticClient _elasticClient;
         private readonly ILogger<ESSearchService> _logger;
-        private readonly ISearchRequest _request;
         private readonly MappingIndex _mappingIndex;
         private readonly QueryBuilder<T> _queryBuilder;
+        private readonly ISearchRequest _request;
         private long _totalNumber;
 
         public ESQueryableService(IElasticClient client, ILogger<ESSearchService> logger)
@@ -87,7 +87,6 @@ namespace XieyiESLibrary.Services
                 _logger.LogError(ex, $"Message:{ex.Message}{Environment.NewLine}Stack:{ex.StackTrace}");
                 return Activator.CreateInstance<List<T>>();
             }
-           
         }
 
         public List<T> ToPageList(int pageIndex, int pageSize, out long totalNumber)
@@ -104,7 +103,6 @@ namespace XieyiESLibrary.Services
                 totalNumber = 0;
                 return Activator.CreateInstance<List<T>>();
             }
-            
         }
 
         public IESQueryable<T> Where(Expression<Func<T, bool>> expression)
@@ -124,7 +122,8 @@ namespace XieyiESLibrary.Services
             var response = _elasticClient.Search<TResult>(_request);
 
             if (!response.IsValid)
-                throw new Exception($"Search index:[{typeof(TResult).Name.ToLower()}] failed -> Message:{response.OriginalException}");
+                throw new Exception(
+                    $"Search index:[{typeof(TResult).Name.ToLower()}] failed -> Message:{response.OriginalException}");
 
             _totalNumber = response.Total;
             return response.Documents.ToList();
@@ -135,7 +134,8 @@ namespace XieyiESLibrary.Services
             var response = await _elasticClient.SearchAsync<TResult>(_request);
 
             if (!response.IsValid)
-                throw new Exception($"SearchAsync index:[{typeof(TResult).Name.ToLower()}] failed -> Message:{response.OriginalException}");
+                throw new Exception(
+                    $"SearchAsync index:[{typeof(TResult).Name.ToLower()}] failed -> Message:{response.OriginalException}");
 
             _totalNumber = response.Total;
             return response.Documents.ToList();
@@ -144,7 +144,8 @@ namespace XieyiESLibrary.Services
         private void _OrderBy(Expression expression, OrderByType type = OrderByType.Asc)
         {
             var propertyName = ReflectionExtensionHelper.GetProperty(expression as LambdaExpression).Name;
-            propertyName = _mappingIndex.Columns.FirstOrDefault(x => x.PropertyName == propertyName)?.SearchName ?? propertyName;
+            propertyName = _mappingIndex.Columns.FirstOrDefault(x => x.PropertyName == propertyName)?.SearchName ??
+                           propertyName;
             _request.Sort = new ISort[]
             {
                 new FieldSort

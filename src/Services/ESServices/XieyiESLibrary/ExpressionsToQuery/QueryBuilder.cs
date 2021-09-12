@@ -7,7 +7,7 @@ using XieyiESLibrary.ExpressionsToQuery.Common;
 namespace XieyiESLibrary.ExpressionsToQuery
 {
     /// <summary>
-    /// QueryContainer建造者
+    ///     QueryContainer建造者
     /// </summary>
     public class QueryBuilder<T>
     {
@@ -22,7 +22,7 @@ namespace XieyiESLibrary.ExpressionsToQuery
         {
             return ExpressionsGetQuery.GetQuery(expression, _mappingIndex);
         }
-        
+
         public MappingIndex GetMappingIndex()
         {
             return _mappingIndex;
@@ -35,7 +35,7 @@ namespace XieyiESLibrary.ExpressionsToQuery
 
         private static MappingIndex InitMappingInfo(Type type)
         {
-            var mapping = new MappingIndex {Type = type, IndexName = type.Name};
+            var mapping = new MappingIndex { Type = type, IndexName = type.Name };
             foreach (var property in type.GetProperties())
                 mapping.Columns.Add(new MappingColumn
                 {

@@ -11,5 +11,4 @@
         Loose,
         Tight
     }
-
 }

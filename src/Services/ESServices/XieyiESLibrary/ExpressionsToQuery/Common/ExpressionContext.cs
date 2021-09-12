@@ -47,17 +47,24 @@ namespace XieyiESLibrary.ExpressionsToQuery.Common
                     break;
                 case TermRangeQuery termRangeQuery:
                     termRangeQuery.Field = LastFiled;
-                    termRangeQuery.GreaterThan = !string.IsNullOrWhiteSpace(termRangeQuery.GreaterThan) ? LastValue.ToString() : null;
-                    termRangeQuery.GreaterThanOrEqualTo = !string.IsNullOrWhiteSpace(termRangeQuery.GreaterThanOrEqualTo) ? LastValue.ToString() : null;
-                    termRangeQuery.LessThan = !string.IsNullOrWhiteSpace(termRangeQuery.LessThan) ? LastValue.ToString() : null;
-                    termRangeQuery.LessThanOrEqualTo = !string.IsNullOrWhiteSpace(termRangeQuery.LessThanOrEqualTo) ? LastValue.ToString() : null;
+                    termRangeQuery.GreaterThan = !string.IsNullOrWhiteSpace(termRangeQuery.GreaterThan)
+                        ? LastValue.ToString()
+                        : null;
+                    termRangeQuery.GreaterThanOrEqualTo =
+                        !string.IsNullOrWhiteSpace(termRangeQuery.GreaterThanOrEqualTo) ? LastValue.ToString() : null;
+                    termRangeQuery.LessThan = !string.IsNullOrWhiteSpace(termRangeQuery.LessThan)
+                        ? LastValue.ToString()
+                        : null;
+                    termRangeQuery.LessThanOrEqualTo = !string.IsNullOrWhiteSpace(termRangeQuery.LessThanOrEqualTo)
+                        ? LastValue.ToString()
+                        : null;
                     break;
                 case MatchPhraseQuery matchPhraseQuery:
                     matchPhraseQuery.Field = LastFiled;
                     matchPhraseQuery.Query = LastValue.ToString();
                     break;
                 case QueryStringQuery queryStringQuery:
-                    queryStringQuery.Fields = new[] {LastFiled};
+                    queryStringQuery.Fields = new[] { LastFiled };
                     queryStringQuery.Query = "*" + LastValue + "*";
                     break;
             }

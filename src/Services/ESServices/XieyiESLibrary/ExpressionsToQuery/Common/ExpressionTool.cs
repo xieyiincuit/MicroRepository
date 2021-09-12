@@ -10,7 +10,8 @@ namespace XieyiESLibrary.ExpressionsToQuery.Common
     {
         public static bool IsOperator(ExpressionType expressionType)
         {
-            return expressionType is ExpressionType.And or ExpressionType.AndAlso or ExpressionType.Or or ExpressionType.OrElse;
+            return expressionType is ExpressionType.And or ExpressionType.AndAlso or ExpressionType.Or or ExpressionType
+                .OrElse;
         }
 
         public static QueryBase GetOperator(ExpressionType expressionType)

@@ -15,7 +15,7 @@ namespace XieyiESLibrary.Extensions
         private static Expression StripQuotes(this Expression expression)
         {
             while (expression.NodeType == ExpressionType.Quote)
-                expression = ((UnaryExpression) expression).Operand;
+                expression = ((UnaryExpression)expression).Operand;
             return expression;
         }
 
@@ -29,7 +29,7 @@ namespace XieyiESLibrary.Extensions
         /// <returns>LambdaExpression no longer wrapped in quotes.</returns>
         public static LambdaExpression GetLambda(this Expression expression)
         {
-            return (LambdaExpression) expression.StripQuotes();
+            return (LambdaExpression)expression.StripQuotes();
         }
     }
 }

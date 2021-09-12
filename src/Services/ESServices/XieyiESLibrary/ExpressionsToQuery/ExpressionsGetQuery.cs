@@ -9,7 +9,8 @@ namespace XieyiESLibrary.ExpressionsToQuery
     {
         public static QueryContainer GetQuery(Expression expression, MappingIndex mappingIndex)
         {
-            var parameter = new ExpressionParameter {CurrentExpression = expression, Context = new ExpressionContext(mappingIndex)};
+            var parameter = new ExpressionParameter
+                { CurrentExpression = expression, Context = new ExpressionContext(mappingIndex) };
             new BaseResolve(parameter).Start();
             return parameter.Context.QueryContainer;
         }

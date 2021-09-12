@@ -12,14 +12,14 @@ namespace XieyiESLibrary.ExpressionsToQuery.Common
                 switch (expr.NodeType)
                 {
                     case ExpressionType.Lambda:
-                        expr = ((LambdaExpression) expr).Body;
+                        expr = ((LambdaExpression)expr).Body;
                         break;
                     case ExpressionType.Convert:
-                        expr = ((UnaryExpression) expr).Operand;
+                        expr = ((UnaryExpression)expr).Operand;
                         break;
                     case ExpressionType.MemberAccess:
                     {
-                        var memberExpression = (MemberExpression) expr;
+                        var memberExpression = (MemberExpression)expr;
                         var mi = memberExpression.Member;
                         return mi;
                     }

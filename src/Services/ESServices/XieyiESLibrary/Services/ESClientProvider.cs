@@ -24,12 +24,14 @@ namespace XieyiESLibrary.Services
                 if (uris.Count == 1)
                 {
                     var uri = uris.First();
-                    connectionSetting = new ConnectionSettings(uri).DeadTimeout(TimeSpan.FromSeconds(30)).DefaultIndex("");
+                    connectionSetting = new ConnectionSettings(uri).DeadTimeout(TimeSpan.FromSeconds(30))
+                        .DefaultIndex("");
                 }
                 else
                 {
                     var connectionPool = new SniffingConnectionPool(uris);
-                    connectionSetting = new ConnectionSettings(connectionPool).DeadTimeout(TimeSpan.FromSeconds(30)).DefaultIndex("");
+                    connectionSetting = new ConnectionSettings(connectionPool).DeadTimeout(TimeSpan.FromSeconds(30))
+                        .DefaultIndex("");
                 }
 
                 //如果初始化了Name & Password 考虑使用验证

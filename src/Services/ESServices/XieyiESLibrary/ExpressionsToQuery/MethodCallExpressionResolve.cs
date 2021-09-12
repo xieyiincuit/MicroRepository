@@ -10,7 +10,7 @@ namespace XieyiESLibrary.ExpressionsToQuery
         public MethodCallExpressionResolve(ExpressionParameter parameter) : base(parameter)
         {
             var express = Expression as MethodCallExpression;
-            if (express == null) 
+            if (express == null)
                 return;
             var methodName = express.Method.Name;
 

@@ -9,6 +9,6 @@ namespace XieyiESLibrary.Entity.Mapping
 
         public string IndexName { get; set; }
 
-        public List<MappingColumn> Columns { get; } = new List<MappingColumn>(0);
+        public List<MappingColumn> Columns { get; } = new(0);
     }
 }
