@@ -17,7 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XieyiES.Api", "src\Services
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "esTestRepository", "esTestRepository", "{77E74A3C-EA8D-4C38-AD59-470E3EBAB11D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XieyiESClient.Unit", "test\esRepository\XieyiESClient.Unit\XieyiESClient.Unit.csproj", "{67319224-6728-4871-AFFD-E2B8D7426326}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XieyiESClient.Unit", "test\esRepository\XieyiESClient.Unit\XieyiESClient.Unit.csproj", "{67319224-6728-4871-AFFD-E2B8D7426326}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "redisRepository", "redisRepository", "{2E0E3AC7-EE48-459C-ADDE-6ABB15DF724F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XieyiRedisLibrary", "XieyiRedisLibrary\XieyiRedisLibrary.csproj", "{4C26A6F1-2C69-4773-BE93-A4D75208A617}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +41,10 @@ Global
 		{67319224-6728-4871-AFFD-E2B8D7426326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67319224-6728-4871-AFFD-E2B8D7426326}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67319224-6728-4871-AFFD-E2B8D7426326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C26A6F1-2C69-4773-BE93-A4D75208A617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C26A6F1-2C69-4773-BE93-A4D75208A617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C26A6F1-2C69-4773-BE93-A4D75208A617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C26A6F1-2C69-4773-BE93-A4D75208A617}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +56,8 @@ Global
 		{C5EF04D1-C032-44A7-ACF3-7A8E99D5C7CF} = {D2BB0473-13A2-4E7F-AA95-C8639F70E0F6}
 		{77E74A3C-EA8D-4C38-AD59-470E3EBAB11D} = {62DCB539-F66A-406D-8943-5F42436A4CF6}
 		{67319224-6728-4871-AFFD-E2B8D7426326} = {77E74A3C-EA8D-4C38-AD59-470E3EBAB11D}
+		{2E0E3AC7-EE48-459C-ADDE-6ABB15DF724F} = {2487A629-7792-403C-AFDC-9E990D5079CE}
+		{4C26A6F1-2C69-4773-BE93-A4D75208A617} = {2E0E3AC7-EE48-459C-ADDE-6ABB15DF724F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {56DD0392-6C21-4996-A090-FDA9545B9CAA}

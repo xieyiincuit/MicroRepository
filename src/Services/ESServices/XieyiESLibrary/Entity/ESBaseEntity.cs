@@ -1,4 +1,5 @@
 ﻿using System;
+using Nest;
 
 namespace XieyiESLibrary.Entity
 {
@@ -10,6 +11,7 @@ namespace XieyiESLibrary.Entity
         /// <summary>
         ///     Id (default is guid)
         /// </summary>
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        [Keyword(Name = "id")]
+        public string Id { get; set; } = Guid.NewGuid().ToString("N");
     }
 }
