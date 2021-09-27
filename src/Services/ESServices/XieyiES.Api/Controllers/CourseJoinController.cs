@@ -92,7 +92,7 @@ namespace XieyiES.Api.Controllers
                 }
             };
             var response = await _esRepository.InsertRangeAsync(courseRecords, "coursejoinrecord");
-
+            
             if (!response) return BadRequest();
 
             return Ok(courseRecords);
